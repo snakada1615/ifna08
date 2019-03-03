@@ -1,0 +1,48 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+{% load humanize %}
+
+	<h1>Family data</h1>
+	<h2>Family name: {{ name }}</h2>
+		<table class="table table-bordered table-striped table-condensed>
+			<tbody>
+				<tr class="success">
+					<td>sex</td>
+					<td>age</td>
+					<td>women status</td>
+				</tr>
+				{% for family in families %}
+					<tr>
+						<td>{{ family.get_sex_display }}</td>
+						<td>{{ family.get_age_display }}</td>
+						<td>{{ family.get_women_s_display }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<h4>protein : {{dri_p|floatformat:2}} (g/day)  vit-A : {{dri_v|intcomma}} (μg/day)  fe : {{dri_f|floatformat:2}} (mg/day)</h4>
+
+		&nbsp;&nbsp;
+		<hr>
+		<hr>
+
+		<form method="post">
+		    {% csrf_token %}
+				<table>
+					{{form}}
+				</table>
+				<input class="btn btn-primary" type="submit" name="btn1" value="Add Family member"/>
+				<input class="btn btn-primary" type="submit" name="btn2" value="Edit other Family"/>
+				<input class="btn btn-primary" type="submit" name="btn3" value="Back to main menu"/>
+		</form>
+
+	{% if messages %}
+	<ul class="messages">
+	    {% for message in messages %}
+	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	    {% endfor %}
+	</ul>
+	{% endif %}
+{% endblock %}

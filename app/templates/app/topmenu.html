@@ -1,0 +1,10 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  <h2>IFNA tools</h2>
+  <hr>
+  <div>
+    <h2><a class="btn btn-primary" href="{% url 'fct_view_paging' 1 1 %}">Food composition table</a><br></h2>
+    <h2><a class="btn btn-primary" href="{% url 'family_select_create' %}">family information</a><br></h2>
+  </div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+	<h1>Family data</h1>
+	<h2>Family name: {{ name }}</h2>
+    <table class="table table-bordered table-striped table-condensed>
+      <tbody>
+				<tr class="success">
+					<td>sex</td>
+					<td>age</td>
+					<td>women status</td>
+				</tr>
+        {% for family in families %}
+          <tr>
+						<td>{{ family.get_sex_display }}</td>
+            <td>{{ family.get_age_display }}</td>
+            <td>{{ family.get_women_s_display }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+	<form action="" method="POST">
+	  {% csrf_token %}
+		{{families}}
+		<input class="btn btn-primary" type="submit" name="btn2" value="Next"/>
+	</form>
+{% endblock %}

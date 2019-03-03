@@ -1,0 +1,322 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+<div class="table-responsive">
+	<h1>Food composition table</h1>
+	<hr>
+	<form action="" method="POST">
+	<input class="btn btn-primary" type="submit" name="btn1" value="Sort by selected key"/>
+	<input class="btn btn-primary" type="submit" name="btn2" value="Back to main menu"/>
+	<h4> sort key: </h4>
+	{{order1.key1}}
+	&nbsp;&nbsp;
+
+
+	<hr>
+	<h2>Food group: Cereals and their products</h2>
+	{% csrf_token %}
+
+    <table class="table table-bordered table-striped table-condensed">
+			<thead>
+				<tr class="success">
+					<td>food item</td>
+					<td>protein</td>
+					<td>Fe</td>
+					<td>Vit-A</td>
+				</tr>
+			</thead>
+			<tbody>
+        {% for food in foods1 %}
+          <tr>
+						<td>{{ food.Food_name }}</td>
+            <td>{{ food.Protein }}</td>
+						<td>{{ food.FE }}</td>
+            <td>{{ food.VITA_RAE }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+		<P>
+		<hr>
+
+
+		<h2>Food group: Starchy roots, tubers and their products</h2>
+			<table class="table table-bordered table-striped table-condensed">
+				<thead>
+					<tr class="success">
+						<td>food item</td>
+						<td>protein</td>
+						<td>Fe</td>
+						<td>Vit-A</td>
+					</tr>
+				</thead>
+				<tbody>
+	        {% for food in foods2 %}
+	          <tr>
+							<td>{{ food.Food_name }}</td>
+	            <td>{{ food.Protein }}</td>
+							<td>{{ food.FE }}</td>
+	            <td>{{ food.VITA_RAE }}</td>
+	          </tr>
+	        {% endfor %}
+	      </tbody>
+	    </table>
+			<P>
+			<hr>
+
+			<h2>Food group: Legumes and their products</h2>
+				<table class="table table-bordered table-striped table-condensed">
+					<thead>
+						<tr class="success">
+							<td>food item</td>
+							<td>protein</td>
+							<td>Fe</td>
+							<td>Vit-A</td>
+						</tr>
+					</thead>
+					<tbody>
+		        {% for food in foods3 %}
+		          <tr>
+								<td>{{ food.Food_name }}</td>
+		            <td>{{ food.Protein }}</td>
+								<td>{{ food.FE }}</td>
+		            <td>{{ food.VITA_RAE }}</td>
+		          </tr>
+		        {% endfor %}
+		      </tbody>
+		    </table>
+				<P>
+				<hr>
+
+				<h2>Food group: Vegetables and their products</h2>
+					<table class="table table-bordered table-striped table-condensed">
+						<thead>
+							<tr class="success">
+								<td>food item</td>
+								<td>protein</td>
+								<td>Fe</td>
+								<td>Vit-A</td>
+							</tr>
+						</thead>
+						<tbody>
+			        {% for food in foods4 %}
+			          <tr>
+									<td>{{ food.Food_name }}</td>
+			            <td>{{ food.Protein }}</td>
+									<td>{{ food.FE }}</td>
+			            <td>{{ food.VITA_RAE }}</td>
+			          </tr>
+			        {% endfor %}
+			      </tbody>
+			    </table>
+					<P>
+					<hr>
+
+					<h2>Food group: Fruits and their products</h2>
+						<table class="table table-bordered table-striped table-condensed">
+							<thead>
+								<tr class="success">
+									<td>food item</td>
+									<td>protein</td>
+									<td>Fe</td>
+									<td>Vit-A</td>
+								</tr>
+							</thead>
+							<tbody>
+				        {% for food in foods5 %}
+				          <tr>
+										<td>{{ food.Food_name }}</td>
+				            <td>{{ food.Protein }}</td>
+										<td>{{ food.FE }}</td>
+				            <td>{{ food.VITA_RAE }}</td>
+				          </tr>
+				        {% endfor %}
+				      </tbody>
+				    </table>
+						<P>
+						<hr>
+
+						<h2>Food group: Nuts, seeds and their products</h2>
+							<table class="table table-bordered table-striped table-condensed">
+								<thead>
+									<tr class="success">
+										<td>food item</td>
+										<td>protein</td>
+										<td>Fe</td>
+										<td>Vit-A</td>
+									</tr>
+								</thead>
+								<tbody>
+					        {% for food in foods6 %}
+					          <tr>
+											<td>{{ food.Food_name }}</td>
+					            <td>{{ food.Protein }}</td>
+											<td>{{ food.FE }}</td>
+					            <td>{{ food.VITA_RAE }}</td>
+					          </tr>
+					        {% endfor %}
+					      </tbody>
+					    </table>
+							<P>
+							<hr>
+
+							<h2>Food group: Meat and poultry and their products</h2>
+								<table class="table table-bordered table-striped table-condensed">
+									<thead>
+										<tr class="success">
+											<td>food item</td>
+											<td>protein</td>
+											<td>Fe</td>
+											<td>Vit-A</td>
+										</tr>
+									</thead>
+									<tbody>
+						        {% for food in foods7 %}
+						          <tr>
+												<td>{{ food.Food_name }}</td>
+						            <td>{{ food.Protein }}</td>
+												<td>{{ food.FE }}</td>
+						            <td>{{ food.VITA_RAE }}</td>
+						          </tr>
+						        {% endfor %}
+						      </tbody>
+						    </table>
+								<P>
+
+								<hr>
+
+								<h2>Food group: Eggs and their products</h2>
+									<table class="table table-bordered table-striped table-condensed">
+										<thead>
+											<tr class="success">
+												<td>food item</td>
+												<td>protein</td>
+												<td>Fe</td>
+												<td>Vit-A</td>
+											</tr>
+										</thead>
+										<tbody>
+							        {% for food in foods8 %}
+							          <tr>
+													<td>{{ food.Food_name }}</td>
+							            <td>{{ food.Protein }}</td>
+													<td>{{ food.FE }}</td>
+							            <td>{{ food.VITA_RAE }}</td>
+							          </tr>
+							        {% endfor %}
+							      </tbody>
+							    </table>
+									<P>
+
+									<hr>
+
+									<h2>Food group: Fish and their products</h2>
+										<table class="table table-bordered table-striped table-condensed">
+											<thead>
+												<tr class="success">
+													<td>food item</td>
+													<td>protein</td>
+													<td>Fe</td>
+													<td>Vit-A</td>
+												</tr>
+											</thead>
+											<tbody>
+								        {% for food in foods9 %}
+								          <tr>
+														<td>{{ food.Food_name }}</td>
+								            <td>{{ food.Protein }}</td>
+														<td>{{ food.FE }}</td>
+								            <td>{{ food.VITA_RAE }}</td>
+								          </tr>
+								        {% endfor %}
+								      </tbody>
+								    </table>
+										<P>
+
+										<hr>
+
+										<h2>Food group: Milk and their products</h2>
+											<table class="table table-bordered table-striped table-condensed">
+												<thead>
+													<tr class="success">
+														<td>food item</td>
+														<td>protein</td>
+														<td>Fe</td>
+														<td>Vit-A</td>
+													</tr>
+												</thead>
+												<tbody>
+									        {% for food in foods10 %}
+									          <tr>
+															<td>{{ food.Food_name }}</td>
+									            <td>{{ food.Protein }}</td>
+															<td>{{ food.FE }}</td>
+									            <td>{{ food.VITA_RAE }}</td>
+									          </tr>
+									        {% endfor %}
+									      </tbody>
+									    </table>
+											<P>
+
+											<hr>
+
+											<h2>Food group: Beverages</h2>
+												<table class="table table-bordered table-striped table-condensed">
+													<thead>
+														<tr class="success">
+															<td>food item</td>
+															<td>protein</td>
+															<td>Fe</td>
+															<td>Vit-A</td>
+														</tr>
+													</thead>
+													<tbody>
+										        {% for food in foods11 %}
+										          <tr>
+																<td class="thead_w1">{{ food.Food_name }}</td>
+										            <td>{{ food.Protein }}</td>
+																<td>{{ food.FE }}</td>
+										            <td>{{ food.VITA_RAE }}</td>
+										          </tr>
+										        {% endfor %}
+										      </tbody>
+										    </table>
+												<P>
+
+												<hr>
+
+												<h2>Food group: Miscellaneous</h2>
+													<table class="table table-bordered table-striped table-condensed">
+														<thead>
+															<tr class="success">
+																<td>food item</td>
+																<td>protein</td>
+																<td>Fe</td>
+																<td>Vit-A</td>
+															</tr>
+														</thead>
+														<tbody>
+											        {% for food in foods12 %}
+											          <tr>
+																	<td>{{ food.Food_name }}</td>
+											            <td>{{ food.Protein }}</td>
+																	<td>{{ food.FE }}</td>
+											            <td>{{ food.VITA_RAE }}</td>
+											          </tr>
+											        {% endfor %}
+											      </tbody>
+											    </table>
+													<P>
+
+													<hr>
+
+											<hr>
+											<input class="btn btn-primary" type="submit" name="btn1" value="Sort by selected key"/>
+											<input class="btn btn-primary" type="submit" name="btn2" value="Back to main menu"/>
+											</form>
+
+											<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+										  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+{% endblock %}
