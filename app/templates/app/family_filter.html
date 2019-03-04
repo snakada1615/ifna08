@@ -42,6 +42,7 @@
 	<div class="row">
 		<div class="col-12">
 			<ul class="list-group">
+			<p>here place family name</p>
 				{% for family in family_list %}
 				<li class="list-group-family">
 
@@ -58,16 +59,12 @@
 							<p>women status</p>
 							<p>{{ family.get_women_s_display }}</p>
 						</div>
+						<div class="col-3">
+							<p>date</p>
+							<p>{{family.created_at|date:"Y/m/d"}}</p>
+						</div>
 					</div>
 
-					<div class="row">
-						<div class="col-3">
-							<p>registered date</p>
-						</div>
-						<div class="col-9">
-							<p>{{family.created_at|date:"Y/m/d G:i:s"}}</p>
-						</div>
-					</div>
 					<div class="row">
 						<div class="col-12">
 							<div class="float-right">

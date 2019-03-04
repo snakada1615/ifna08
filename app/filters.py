@@ -1,7 +1,7 @@
 from django_filters import FilterSet
 from django_filters import filters
 
-from .models import Family
+from .models import FamilyList
 
 
 class MyOrderingFilter(filters.OrderingFilter):
@@ -9,7 +9,7 @@ class MyOrderingFilter(filters.OrderingFilter):
 
 class FamilyFilter(FilterSet):
 
-    name = filters.ModelChoiceFilter(queryset = Family.objects.all())
+    name = filters.ModelChoiceFilter(queryset = FamilyList.objects.all())
 #    family_name = filters.CharFilter(label='family name', lookup_expr='contains')
 #    women_s = filters.CharFilter(label='women special', lookup_expr='contains')
 
@@ -27,5 +27,5 @@ class FamilyFilter(FilterSet):
     )
 
     class Meta:
-        model = Family
+        model = FamilyList
         fields = ('name',)

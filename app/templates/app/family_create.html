@@ -3,29 +3,29 @@
 {% block content %}
 {% load humanize %}
 
-	<h1>Family data</h1>
-	<h2>Family name: {{ name }}</h2>
+	<h6>Family member of: {{ name }}</h6>
 		<table class="table table-bordered table-striped table-condensed>
 			<tbody>
 				<tr class="success">
 					<td>sex</td>
 					<td>age</td>
 					<td>women status</td>
+					<td>Del</td>
 				</tr>
 				{% for family in families %}
 					<tr>
 						<td>{{ family.get_sex_display }}</td>
 						<td>{{ family.get_age_display }}</td>
 						<td>{{ family.get_women_s_display }}</td>
+						<td><a class="btn btn-outline-secondary " href="{% url 'delete' family.pk %}">del</a></td>
 					</tr>
 				{% endfor %}
 			</tbody>
 		</table>
 
-		<h4>protein : {{dri_p|floatformat:2}} (g/day)  vit-A : {{dri_v|intcomma}} (μg/day)  fe : {{dri_f|floatformat:2}} (mg/day)</h4>
-
-		&nbsp;&nbsp;
+		&nbsp;
 		<hr>
+			<h6>Add Family member</h6>
 		<hr>
 
 		<form method="post">
@@ -33,16 +33,17 @@
 				<table>
 					{{form}}
 				</table>
-				<input class="btn btn-primary" type="submit" name="btn1" value="Add Family member"/>
-				<input class="btn btn-primary" type="submit" name="btn2" value="Edit other Family"/>
-				<input class="btn btn-primary" type="submit" name="btn3" value="Back to main menu"/>
+				<input class="btn btn-primary" type="submit" name="btn1" value="Add family"/>
+
+		&nbsp;
+		<hr>
+		<h6>Family Nutrition Requirement</h6>
+		<hr>
+		<h6>protein : {{dri_p|floatformat:2}} (g/day)</h6>
+		<h6>vit-A : {{dri_v|intcomma}} (μg/day)</h6>
+		<h6>fe : {{dri_f|floatformat:2}} (mg/day)</h6>
+
+		<input class="btn btn-primary" type="submit" name="btn2" value="Back"/>
 		</form>
 
-	{% if messages %}
-	<ul class="messages">
-	    {% for message in messages %}
-	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-	    {% endfor %}
-	</ul>
-	{% endif %}
 {% endblock %}

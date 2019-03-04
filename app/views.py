@@ -98,8 +98,26 @@ class FamilyDetailView(LoginRequiredMixin, DetailView):
 # 登録画面
 class FamilyCreateView(LoginRequiredMixin, CreateView):
     model = Family
-    form_class = FamilyForm
+    form_class = Family_Create_Form
     success_url = reverse_lazy('index')
+
+    def post(self, request, *args, **kwargs):
+        form = Family_Create_Form(request.POST)
+        if form.is_valid():
+            family=form.save()
+            family.save()
+
+            family_p = Family.objects.aggregate(Sum('protein'))
+            family_v = Family.objects.aggregate(Sum('vita'))
+            family_f = Family.objects.aggregate(Sum('fe'))
+            mydata = self.request.session.get('myword')
+            myid = FamilyList.objects.get(name = mydata).id
+            rec = FamilyList.objects.filter(id = myid).first()
+            rec.protein = family_p['protein__sum']
+            rec.vita = family_v['vita__sum']
+            rec.fe = family_f['fe__sum']
+            rec.save()
+        return redirect('index')
 
 
 # 更新画面
@@ -112,9 +130,7 @@ class FamilyUpdateView(LoginRequiredMixin, UpdateView):
 # 削除画面
 class FamilyDeleteView(LoginRequiredMixin, DeleteView):
     model = Family
-    success_url = reverse_lazy('index')
-
-
+    success_url = reverse_lazy('family_create')
 
 
 class top_menu(LoginRequiredMixin, TemplateView):

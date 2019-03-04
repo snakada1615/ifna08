@@ -25,9 +25,6 @@ class FamilyForm(forms.ModelForm):
                     'women_s': forms.RadioSelect(),
                   }
 
-
-
-
 class BS4RadioSelect(forms.RadioSelect):
     input_type = 'radio'
     template_name = 'app/widgets/bs4_radio.html'
