@@ -37,11 +37,49 @@
 
 		&nbsp;
 		<hr>
-		<h6>Family Nutrition Requirement</h6>
+
+		<div class="container text-white">
+			<div class="row">
+	        <div class="col-12 border bg-success">
+	        	Family Nutrition Requirement
+	        </div>
+	    </div>
+	    <div class="row">
+	        <div class="col-4 border bg-success">
+	        	protein :
+	        </div>
+	        <div class="col-4 border bg-success">
+	        	{{dri_p|floatformat:2}}
+	        </div>
+	        <div class="col-4 border bg-success">
+	        	(g/day)
+	        </div>
+	    </div>
+			<div class="row">
+	        <div class="col-4 border bg-success">
+	        	vit-A :
+	        </div>
+	        <div class="col-4 border bg-success">
+	        	{{dri_v|intcomma}}
+	        </div>
+	        <div class="col-4 border bg-success">
+	        	(μg/day)
+	        </div>
+	    </div>
+			<div class="row">
+	        <div class="col-4 border bg-success">
+	        	Fe :
+	        </div>
+	        <div class="col-4 border bg-success">
+	        	{{dri_f|floatformat:2}}
+	        </div>
+	        <div class="col-4 border bg-success">
+	        	(mg/day)
+	        </div>
+	    </div>
+		</div>
+
 		<hr>
-		<h6>protein : {{dri_p|floatformat:2}} (g/day)</h6>
-		<h6>vit-A : {{dri_v|intcomma}} (μg/day)</h6>
-		<h6>fe : {{dri_f|floatformat:2}} (mg/day)</h6>
 
 		<input class="btn btn-primary" type="submit" name="btn2" value="Back"/>
 		</form>
