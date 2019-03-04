@@ -12,10 +12,25 @@ CHOICE = {
 }
 
 
+
+class FamilyForm(forms.ModelForm):
+
+    class Meta:
+        model = Family
+        fields = ('name','age','sex','women_s')
+        widgets = {
+                    'name': forms.TextInput(attrs={'placeholder':'ex.) Yamada family'}),
+                    'age': forms.Select(),
+                    'sex': forms.RadioSelect(),
+                    'women_s': forms.RadioSelect(),
+                  }
+
+
+
+
 class BS4RadioSelect(forms.RadioSelect):
     input_type = 'radio'
     template_name = 'app/widgets/bs4_radio.html'
-
 
 class Order_Key_Form(forms.Form):
     key1 = forms.ChoiceField(

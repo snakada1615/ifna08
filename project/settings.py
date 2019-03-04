@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-#    'crispy_forms',
+    'crispy_forms',
     'app',
 ]
 
@@ -125,3 +125,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # 管理サイトのログイン機能を通常のログイン機能として使う
 LOGIN_URL='admin:login'
 LOGOUT_REDIRECT_URL='/'
+
+# django-crispy-forms 設定
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

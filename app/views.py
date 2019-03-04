@@ -1,5 +1,6 @@
 from django.views.generic import TemplateView, CreateView
 from django.views.generic import ListView
+from django.views.generic import DetailView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -10,8 +11,11 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib import messages  # メッセージフレームワーク
 from django.db.models import Sum
+from django_filters.views import FilterView
+
+from .filters import FamilyFilter
 from .models import FCT, Family, DRI, FamilyList
-from .forms import Order_Key_Form, Families, Family_Create_Form
+from .forms import Order_Key_Form, Families, Family_Create_Form, FamilyForm
 
 
 class FCT_view_paging(LoginRequiredMixin, ListView):
@@ -55,6 +59,62 @@ class FCT_view_paging(LoginRequiredMixin, ListView):
     def post(self, request, *args, **kwargs):
         if 'btn2' in request.POST:
             return redirect('top_menu')
+
+
+# Create your views here.
+# 検索一覧画面
+
+# 検索一覧画面
+class FamilyFilterView(LoginRequiredMixin, FilterView):
+    model = Family
+
+    # デフォルトの並び順を新しい順とする
+    queryset = Family.objects.all().order_by('-created_at')
+
+    # django-filter用設定
+    filterset_class = FamilyFilter
+    strict = False
+
+    # 1ページあたりの表示件数
+    paginate_by = 10
+
+    # 検索条件をセッションに保存する
+    def get(self, request, **kwargs):
+        if request.GET:
+            request.session['query'] = request.GET
+        else:
+            request.GET = request.GET.copy()
+            if 'query' in request.session.keys():
+                for key in request.session['query'].keys():
+                    request.GET[key] = request.session['query'][key]
+
+        return super().get(request, **kwargs)
+
+# 詳細画面
+class FamilyDetailView(LoginRequiredMixin, DetailView):
+    model = Family
+
+
+# 登録画面
+class FamilyCreateView(LoginRequiredMixin, CreateView):
+    model = Family
+    form_class = FamilyForm
+    success_url = reverse_lazy('index')
+
+
+# 更新画面
+class FamilyUpdateView(LoginRequiredMixin, UpdateView):
+    model = Family
+    form_class = FamilyForm
+    success_url = reverse_lazy('index')
+
+
+# 削除画面
+class FamilyDeleteView(LoginRequiredMixin, DeleteView):
+    model = Family
+    success_url = reverse_lazy('index')
+
+
 
 
 class top_menu(LoginRequiredMixin, TemplateView):
