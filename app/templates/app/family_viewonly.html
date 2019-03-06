@@ -4,20 +4,20 @@
 {% load humanize %}
 
 	<h6>Family member of: {{ name }}</h6>
-		<table class="table table-bordered table-striped table-condensed>
-			<tbody>
-				<tr class="success">
+		<table class="table table-bordered table-striped table-condensed">
+			<thead>
+				<tr class="table-primary">
 					<td>sex</td>
 					<td>age</td>
 					<td>women status</td>
-					<td>Del</td>
 				</tr>
+			</thead>
+			<tbody>
 				{% for family in families %}
 					<tr>
 						<td>{{ family.get_sex_display }}</td>
 						<td>{{ family.get_age_display }}</td>
 						<td>{{ family.get_women_s_display }}</td>
-						<td><a class="btn btn-outline-secondary " href="{% url 'delete' family.pk %}">del</a></td>
 					</tr>
 				{% endfor %}
 			</tbody>
@@ -68,5 +68,7 @@
 		</div>
 
 		<hr>
+		<td><a class="btn btn-outline-secondary " href="{% url 'family_edit' myid %}">edit family</a></td>
+		<td><a class="btn btn-outline-secondary " href="{% url 'family_select_create' %}">back</a></td>
 
 {% endblock %}

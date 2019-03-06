@@ -17,6 +17,41 @@ from .filters import FamilyFilter
 from .models import FCT, Family, DRI, FamilyList
 from .forms import Order_Key_Form, Families, Family_Create_Form, FamilyForm
 
+class FamilyEditView(LoginRequiredMixin, CreateView):
+    template_name = 'app/family_edit.html'
+    form_class = Family_Create_Form
+    success_url = 'family_create'
+
+    def get_context_data(self, **kwargs):
+        myid = self.kwargs['familyid']
+        mydata = FamilyList.objects.get(id = myid)
+        context = super().get_context_data(**kwargs)
+        form = Family_Create_Form(initial={'name': mydata, 'familyid' : myid})
+        context['form'] = form
+        context['name'] = mydata
+        context['myid'] = myid
+        context["families"] = Family.objects.filter(familyid = self.kwargs['familyid']).order_by('age')
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if 'btn1' in request.POST:
+            form = Family_Create_Form(request.POST)
+            if form.is_valid():
+                family=form.save()
+                family.save()
+
+                family_p = Family.objects.aggregate(Sum('protein'))
+                family_v = Family.objects.aggregate(Sum('vita'))
+                family_f = Family.objects.aggregate(Sum('fe'))
+                myid = self.kwargs['familyid']
+                mydata = FamilyList.objects.get(id = myid).name
+                rec = FamilyList.objects.filter(id = myid).first()
+                rec.protein = family_p['protein__sum']
+                rec.vita = family_v['vita__sum']
+                rec.fe = family_f['fe__sum']
+                rec.save()
+            return redirect('family_edit')
+
 
 class family_viewonly(LoginRequiredMixin, ListView):
     template_name = 'app/family_viewonly.html'  # この行でテンプレート指定
@@ -24,8 +59,17 @@ class family_viewonly(LoginRequiredMixin, ListView):
     model = Family
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(familyid = self.kwargs['familyid'])
+        queryset = super().get_queryset().filter(familyid = self.kwargs['familyid']).order_by('age')
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['name'] = FamilyList.objects.get(id = self.kwargs['familyid'])
+        context['myid'] = FamilyList.objects.get(id = self.kwargs['familyid']).id
+        context['dri_p'] = FamilyList.objects.get(id = self.kwargs['familyid']).protein
+        context['dri_v'] = FamilyList.objects.get(id = self.kwargs['familyid']).vita
+        context['dri_f'] = FamilyList.objects.get(id = self.kwargs['familyid']).fe
+        return context
 
 class FCT_view_paging(LoginRequiredMixin, ListView):
     template_name = 'app/FCT_Show_paging.html'  # この行でテンプレート指定
@@ -71,7 +115,6 @@ class FCT_view_paging(LoginRequiredMixin, ListView):
 
 
 # Create your views here.
-# 検索一覧画面
 
 # 検索一覧画面
 class FamilyFilterView(LoginRequiredMixin, FilterView):
@@ -199,9 +242,8 @@ def family_select_create(request):
     if request.method == "POST":
         families = Families(data=request.POST)
         if families.is_valid():
-#            address = "family/" + request.POST.get('familyname')
-            request.session['myword'] = request.POST.get('familyname')
-            return HttpResponseRedirect('/family3/')
+            myid = FamilyList.objects.get(name = request.POST.get('familyname')).id
+            return redirect('family_viewonly', familyid = myid)
     else:  # ← methodが'POST'ではない = 最初のページ表示時の処理
         families = Families()
 
