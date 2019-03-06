@@ -18,6 +18,15 @@ from .models import FCT, Family, DRI, FamilyList
 from .forms import Order_Key_Form, Families, Family_Create_Form, FamilyForm
 
 
+class family_viewonly(LoginRequiredMixin, ListView):
+    template_name = 'app/family_viewonly.html'  # この行でテンプレート指定
+    context_object_name = 'families'
+    model = Family
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(familyid = self.kwargs['familyid'])
+        return queryset
+
 class FCT_view_paging(LoginRequiredMixin, ListView):
     template_name = 'app/FCT_Show_paging.html'  # この行でテンプレート指定
     context_object_name = 'foods1'
