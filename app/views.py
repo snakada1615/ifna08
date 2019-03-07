@@ -20,7 +20,6 @@ from .forms import Order_Key_Form, Families, Family_Create_Form, FamilyForm
 class FamilyEditView(LoginRequiredMixin, CreateView):
     template_name = 'app/family_edit.html'
     form_class = Family_Create_Form
-    success_url = 'family_create'
 
     def get_context_data(self, **kwargs):
         myid = self.kwargs['familyid']
@@ -32,6 +31,12 @@ class FamilyEditView(LoginRequiredMixin, CreateView):
         context['myid'] = myid
         context["families"] = Family.objects.filter(familyid = self.kwargs['familyid']).order_by('age')
         return context
+
+    def get_success_url(self, **kwargs):
+        if  kwargs != None:
+            return reverse_lazy('family_edit', kwargs = {'familyid': self.kwargs['familyid']})
+        else:
+            return reverse_lazy('family_edit', args = (self.object.id,))
 
     def post(self, request, *args, **kwargs):
         if 'btn1' in request.POST:
@@ -50,7 +55,8 @@ class FamilyEditView(LoginRequiredMixin, CreateView):
                 rec.vita = family_v['vita__sum']
                 rec.fe = family_f['fe__sum']
                 rec.save()
-            return redirect('family_edit')
+            return redirect('family_edit', familyid = myid)
+#            return redirect('family')
 
 
 class family_viewonly(LoginRequiredMixin, ListView):
@@ -182,8 +188,17 @@ class FamilyUpdateView(LoginRequiredMixin, UpdateView):
 # 削除画面
 class FamilyDeleteView(LoginRequiredMixin, DeleteView):
     model = Family
-    success_url = reverse_lazy('family_create')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['familyid'] = self.kwargs['familyid']
+        return context
+
+    def get_success_url(self, **kwargs):
+        if  kwargs != None:
+            return reverse_lazy('family_edit', kwargs = {'familyid': self.kwargs['familyid']})
+        else:
+            return reverse_lazy('family_edit', args = (self.object.id,))
 
 class top_menu(LoginRequiredMixin, TemplateView):
     template_name = "app/topmenu.html"  # この行でテンプレート指定
