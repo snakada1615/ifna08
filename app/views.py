@@ -45,10 +45,10 @@ class FamilyEditView(LoginRequiredMixin, CreateView):
                 family=form.save()
                 family.save()
 
-                family_p = Family.objects.aggregate(Sum('protein'))
-                family_v = Family.objects.aggregate(Sum('vita'))
-                family_f = Family.objects.aggregate(Sum('fe'))
                 myid = self.kwargs['familyid']
+                family_p = Family.objects.filter(familyid = myid).aggregate(Sum('protein'))
+                family_v = Family.objects.filter(familyid = myid).aggregate(Sum('vita'))
+                family_f = Family.objects.filter(familyid = myid).aggregate(Sum('fe'))
                 mydata = FamilyList.objects.get(id = myid).name
                 rec = FamilyList.objects.filter(id = myid).first()
                 rec.protein = family_p['protein__sum']
@@ -199,19 +199,6 @@ class FamilyDeleteView(LoginRequiredMixin, DeleteView):
             return reverse_lazy('family_edit', kwargs = {'familyid': self.kwargs['familyid']})
         else:
             return reverse_lazy('family_edit', args = (self.object.id,))
-
-    def post(self, request, *args, **kwargs):
-        if self.request.POST.get("confirm_delete"):
-            family_p = Family.objects.filter(familyid=self.kwargs['familyid']).aggregate(Sum('protein'))
-            family_v = Family.objects.filter(familyid=self.kwargs['familyid']).aggregate(Sum('vita'))
-            family_f = Family.objects.filter(familyid=self.kwargs['familyid']).aggregate(Sum('fe'))
-            rec = FamilyList.objects.filter(id = self.kwargs['familyid']).first()
-            rec.protein = family_p['protein__sum']
-            rec.vita = family_v['vita__sum']
-            rec.fe = family_f['fe__sum']
-            rec.save()
-            
-            return HttpResponseRedirect(self.success_url)
 
 class top_menu(LoginRequiredMixin, TemplateView):
     template_name = "app/topmenu.html"  # この行でテンプレート指定
