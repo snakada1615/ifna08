@@ -45,11 +45,12 @@ class FamiliesAddForm(forms.ModelForm):
 
     def clean_name(self):
         myname = self.cleaned_data['name']
-        if FamilyList.objects().get(name = myname) == NULL:
+        try:
+            go = FamilyList.objects().get(name = myname)
+        except:
             name = myname
             return name
-        else:
-            raise forms.ValidationError('name already exists')
+        raise forms.ValidationError('name already exists')
 
 class Families(forms.Form):
     myquery = FamilyList.objects.all()
