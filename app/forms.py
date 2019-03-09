@@ -38,11 +38,23 @@ class Order_Key_Form(forms.Form):
         initial=1,
         )
 
+class FamiliesAddForm(forms.ModelForm):
+    class Meta:
+        model = FamilyList
+        fields = ("name",)
+
+    def clean_name(self):
+        myname = self.cleaned_data['name']
+        if FamilyList.objects().get(name = myname) == NULL:
+            name = myname
+            return name
+        else:
+            raise forms.ValidationError('name already exists')
 
 class Families(forms.Form):
     myquery = FamilyList.objects.all()
     fields = ('name')
-    familyname = forms.ModelChoiceField(label='family name', queryset=myquery, empty_label='select name', to_field_name='name')
+    familyname = forms.ModelChoiceField(label='', queryset=myquery, empty_label='select name', to_field_name='name')
 
 class Family_Create_Form(forms.ModelForm):
     class Meta:

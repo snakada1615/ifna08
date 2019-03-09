@@ -15,7 +15,7 @@ from django_filters.views import FilterView
 
 from .filters import FamilyFilter
 from .models import FCT, Family, DRI, FamilyList
-from .forms import Order_Key_Form, Families, Family_Create_Form, FamilyForm
+from .forms import Order_Key_Form, Families, Family_Create_Form, FamilyForm, FamiliesAddForm
 
 class FamilyEditView(LoginRequiredMixin, CreateView):
     template_name = 'app/family_edit.html'
@@ -227,6 +227,20 @@ class FamilyDeleteView(LoginRequiredMixin, DeleteView):
 class top_menu(LoginRequiredMixin, TemplateView):
     template_name = "app/topmenu.html"  # この行でテンプレート指定
 
+class FamiliesAddView(LoginRequiredMixin, CreateView):
+    model = FamilyList
+    template_name = 'app/families_add.html'
+    form_class = FamiliesAddForm
+
+    def post(self, request, *args, **kwargs):
+        if 'btn1' in request.POST:
+            myname = request.POST.get('newfamily')
+            FamilyList.objects.create(name = myname)
+            myid =  FamilyList.objects.get(name = myname).id
+            return redirect('family_edit', myid)
+
+        return render(request, 'app/families_add.html', )
+
 
 class CreateFamily(LoginRequiredMixin, CreateView):
     template_name = 'app/family_create.html'
@@ -274,15 +288,20 @@ class CreateFamily(LoginRequiredMixin, CreateView):
         if 'btn3' in request.POST:
             return redirect('top_menu')
 
-
-
 def family_select_create(request):
-
     if request.method == "POST":
-        families = Families(data=request.POST)
-        if families.is_valid():
-            myid = FamilyList.objects.get(name = request.POST.get('familyname')).id
-            return redirect('family_viewonly', familyid = myid)
+        if 'btn1' in request.POST:
+            families = Families(data=request.POST)
+            if families.is_valid():
+                myid = FamilyList.objects.get(name = request.POST.get('familyname')).id
+                return redirect('family_viewonly', familyid = myid)
+
+        if 'btn2' in request.POST:
+            myname = request.POST.get('newfamily')
+            FamilyList.objects.create(name = myname)
+            myid =  FamilyList.objects.get(name = myname).id
+            return redirect('family_edit', myid)
+
     else:  # ← methodが'POST'ではない = 最初のページ表示時の処理
         families = Families()
 
