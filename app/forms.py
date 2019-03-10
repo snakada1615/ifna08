@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.admin import widgets
-from .models import FamilyList, Family, DRI, DRI_women
+from .models import FamilyList, Family, DRI, DRI_women, Diet, FCT
 
 import os
 
@@ -43,14 +43,29 @@ class FamiliesAddForm(forms.ModelForm):
         model = FamilyList
         fields = ("name",)
 
-    def clean_name(self):
-        myname = self.cleaned_data['name']
-        try:
-            go = FamilyList.objects().get(name = myname)
-        except:
-            name = myname
-            return name
-        raise forms.ValidationError('name already exists')
+class DietForm(forms.ModelForm):
+
+    class Meta:
+        model = Diet
+        fields = ("familyid", "diet_type", "food_item_id", "Food_name", "food_wt")
+        widgets = {
+            'familyid': forms.HiddenInput(),
+            'food_item_id': forms.HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.myid = kwargs.pop('familyid')
+        super(DietForm, self).__init__(*args, **kwargs)
+        myquery = FCT.objects.all()
+        self.fields['Food_name'] = forms.ModelChoiceField(queryset=myquery, empty_label='select food', to_field_name='Food_name')
+
+    def clean(self):
+        cleaned_data = super(DietForm, self).clean()
+        self.cleaned_data['food_item_id'] = FCT.objects.get(Food_name = self.cleaned_data['Food_name']).food_item_id
+        self.cleaned_data['familyid'] = self.myid
+        return cleaned_data
+
+
 
 class Families(forms.Form):
     myquery = FamilyList.objects.all()

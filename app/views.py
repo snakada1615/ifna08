@@ -14,8 +14,45 @@ from django.db.models import Sum
 from django_filters.views import FilterView
 
 from .filters import FamilyFilter
-from .models import FCT, Family, DRI, FamilyList
-from .forms import Order_Key_Form, Families, Family_Create_Form, FamilyForm, FamiliesAddForm
+from .models import FCT, Family, DRI, FamilyList, Diet
+from .forms import Order_Key_Form, Families, Family_Create_Form, FamilyForm, FamiliesAddForm, DietForm
+
+class DietListView(LoginRequiredMixin, ListView):
+    model = Diet
+    context_object_name = "mylist"
+    template_name = 'app/diet_list.html'
+
+class DietDeleteView(LoginRequiredMixin, DeleteView):
+    model = Diet
+    success_url = reverse_lazy('diet_index')
+
+class DietCreateView(LoginRequiredMixin, CreateView):
+    model = Diet
+    form_class = DietForm
+    success_url = reverse_lazy('diet_index')
+
+    def get_success_url(self, **kwargs):
+        if  kwargs != None:
+            return reverse_lazy('diet_index', kwargs = {'familyid': self.kwargs['familyid']})
+        else:
+            return reverse_lazy('diet_index', args = (self.object.id,))
+
+    def get_form_kwargs(self):
+        """This method is what injects forms with their keyword
+            arguments."""
+        # grab the current set of form #kwargs
+        kwargs = super(DietCreateView, self).get_form_kwargs()
+        # Update the kwargs with the user_id
+        kwargs['familyid'] = self.kwargs['familyid']
+        return kwargs
+
+class DietUpdateView(LoginRequiredMixin, UpdateView):
+    model = Diet
+    form_class = DietForm
+    success_url = reverse_lazy('diet_index')
+
+class DietDetailView(LoginRequiredMixin, DetailView):
+    model = Diet
 
 class FamilyEditView(LoginRequiredMixin, CreateView):
     template_name = 'app/family_edit.html'
@@ -230,7 +267,7 @@ class top_menu(LoginRequiredMixin, TemplateView):
 class FamiliesAddView(LoginRequiredMixin, CreateView):
     model = FamilyList
     template_name = 'app/families_add.html'
-    form_class = FamiliesAddForm
+    form_class = FamiliesAddForm()
 
     def post(self, request, *args, **kwargs):
         if 'btn1' in request.POST:

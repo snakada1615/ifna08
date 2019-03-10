@@ -70,6 +70,7 @@ class FamilyList(models.Model):
     name = models.CharField(
         verbose_name='name',
         max_length=200,
+        unique = True,
     )
     protein = models.FloatField(
         verbose_name='protein',
@@ -184,3 +185,21 @@ class Family(models.Model):
     class Meta:
         verbose_name = 'Family information'
         verbose_name_plural = 'Family information'
+
+class Diet(models.Model):
+    diet_choices = (
+        (1, 'conventional'),
+        (2, 'recommended'),
+    )
+
+    familyid = models.IntegerField(default=0)
+    food_item_id = models.IntegerField(default=1)
+    Food_name = models.CharField(max_length=200)
+    food_wt = models.FloatField(
+        verbose_name='weight',
+        default=0
+    )
+    diet_type = models.IntegerField(
+        default=1,
+        choices=diet_choices,
+    )

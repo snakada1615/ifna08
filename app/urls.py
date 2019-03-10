@@ -3,6 +3,7 @@ from . import views
 
 from .views import CreateFamily, top_menu, FCT_view_paging, FamilyFilterView, FamilyDetailView, FamilyCreateView
 from .views import FamilyUpdateView, FamilyDeleteView, family_viewonly, FamilyEditView, FamiliesAddView
+from .views import DietCreateView, DietUpdateView, DietListView, DietDeleteView, DietDetailView
 
 urlpatterns = [
     path('',  top_menu.as_view(), name='top_menu'),
@@ -17,5 +18,9 @@ urlpatterns = [
     path('create/', FamilyCreateView.as_view(), name='create'),
     path('update/<int:pk>/', FamilyUpdateView.as_view(), name='update'),
     path('delete/<int:familyid>/<int:pk>/', FamilyDeleteView.as_view(), name='delete'),
-
+    path('diet/list/<int:familyid>/',  DietListView.as_view(), name='diet_index'),
+    path('diet/create/<int:familyid>/', DietCreateView.as_view(), name='diet_create'),
+    path('diet/detail/<int:familyid>/<int:pk>/', DietDetailView.as_view(), name='diet_detail'),
+    path('diet/update/<int:familyid>/<int:pk>/', DietUpdateView.as_view(), name='diet_update'),
+    path('diet/delete/<int:familyid>/<int:pk>/', DietDeleteView.as_view(), name='diet_delete'),
 ]
