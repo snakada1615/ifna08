@@ -22,6 +22,16 @@ class DietListView(LoginRequiredMixin, ListView):
     context_object_name = "mylist"
     template_name = 'app/diet_list.html'
 
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(familyid = self.kwargs['familyid']).order_by('diet_type')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['name'] = FamilyList.objects.get(id = self.kwargs['familyid'])
+        context['familyid'] = self.kwargs['familyid']
+        return context
+
 class DietDeleteView(LoginRequiredMixin, DeleteView):
     model = Diet
     success_url = reverse_lazy('diet_index')

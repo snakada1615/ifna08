@@ -1,12 +1,11 @@
 {% extends 'app/base.html' %}
 
 {% block content %}
-	<h5>{{categ}}</h5>
+	<h5>diet of family: {{name}}</h5>
     <table class="table table-bordered table-striped table-sm table-responsive">
 			<thead>
 				<tr class="table-primary">
 					<td>Diet pettern</td>
-					<td>food id</td>
 					<td>food name</td>
 					<td>food weight</td>
 				</tr>
@@ -14,13 +13,14 @@
 			<tbody>
         {% for diet in mylist %}
           <tr>
-						<td>{{ diet.diet_type }}</td>
-						<td>{{ diet.food_item_id }}</td>
+						<td>{{ diet.get_diet_type_display }}</td>
 						<td>{{ diet.Food_name }}</td>
             <td>{{ diet.food_wt }}</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
+		<td><a class="btn btn-outline-secondary" href="{% url 'diet_index' familyid=mylist.0.familyid %}">back</a></td>
+
 
 {% endblock %}
