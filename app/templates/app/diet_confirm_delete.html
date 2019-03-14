@@ -10,17 +10,17 @@
         <div class="row">
             <div class="col-12">
                 <div class="float-right">
-                    <a class="btn btn-outline-secondary" href="{% url 'family_edit' familyid %}">return</a>
+                    <a class="btn btn-outline-secondary" href="{% url 'diet_index' familyid %}">return</a>
                     <input type="submit" class="btn btn-outline-secondary" value="delete" name="confirm_delete" />
                 </div>
             </div>
         </div>
-        {% include "./family_card.html" %}
+        {% include "./diet_card.html" %}
         <div class="row">
             <div class="col-12">
                 <div class="float-right">
-                    <a class="btn btn-outline-secondary" href="{% url 'family_edit' familyid %}">return</a>
-                    <input type="submit" class="btn btn-outline-secondary" value="delete" name="confirm_delete"  />
+                  <a class="btn btn-outline-secondary" href="{% url 'diet_index' familyid %}">return</a>
+                  <input type="submit" class="btn btn-outline-secondary" value="delete" name="confirm_delete"  />
                 </div>
             </div>
         </div>

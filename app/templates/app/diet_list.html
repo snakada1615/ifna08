@@ -8,6 +8,8 @@
 					<td>Diet pettern</td>
 					<td>food name</td>
 					<td>food weight</td>
+					<td>update</td>
+					<td>delete</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -16,11 +18,14 @@
 						<td>{{ diet.get_diet_type_display }}</td>
 						<td>{{ diet.Food_name }}</td>
             <td>{{ diet.food_wt }}</td>
+						<td><a class="btn btn-outline-secondary " href="{% url 'diet_update' pk=diet.pk  familyid=diet.familyid %}">edit</a></td>
+						<td><a class="btn btn-outline-secondary " href="{% url 'diet_delete' pk=diet.pk  familyid=diet.familyid %}">del</a></td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
-		<td><a class="btn btn-outline-secondary" href="{% url 'diet_index' familyid=mylist.0.familyid %}">back</a></td>
-
+		{% if familyid %}
+		<td><a class="btn btn-outline-secondary" href="{% url 'diet_create' familyid=familyid %}">add</a></td>
+		{% endif %}
 
 {% endblock %}

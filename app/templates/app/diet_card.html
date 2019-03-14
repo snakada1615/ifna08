@@ -1,40 +1,40 @@
 <div class="row">
     <div class="col-3">
-        <p>name</p>
+        <p>id</p>
     </div>
     <div class="col-9">
-        <p>{{ family.family_name }}</p>
+        <p>{{ diet.familyid }}</p>
     </div>
 </div>
 <div class="row">
     <div class="col-3">
-        <p>age</p>
+        <p>food_item_id</p>
     </div>
     <div class="col-9">
-        <p>{{ family.get_age_display }}</p>
+        <p>{{ diet.food_item_id }}</p>
     </div>
 </div>
 <div class="row">
     <div class="col-3">
-        <p>sex</p>
+        <p>Food_name</p>
     </div>
     <div class="col-9">
-        <p>{{ family.get_sex_display }}</p>
+        <p>{{ diet.Food_name }}</p>
     </div>
 </div>
 <div class="row">
     <div class="col-3">
-        <p>women status</p>
+        <p>food_wt</p>
     </div>
     <div class="col-9">
-        <p>{{ family.get_women_s_display }}</p>
+        <p>{{ diet.food_wt }}</p>
     </div>
 </div>
 <div class="row">
     <div class="col-3">
-        <p>register date</p>
+        <p>diet_type</p>
     </div>
     <div class="col-9">
-        <p>{{ family.created_at|date:"Y/m/d G:i:s" }}</p>
+        <p>{{ diet.diet_type }}</p>
     </div>
 </div>

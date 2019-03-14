@@ -36,10 +36,21 @@ class DietDeleteView(LoginRequiredMixin, DeleteView):
     model = Diet
     success_url = reverse_lazy('diet_index')
 
+    def get_success_url(self, **kwargs):
+        if  kwargs != None:
+            return reverse_lazy('diet_index', kwargs = {'familyid': self.kwargs['familyid']})
+        else:
+            return reverse_lazy('diet_index', args = (self.object.id,))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['name'] = FamilyList.objects.get(id = self.kwargs['familyid'])
+        context['familyid'] = self.kwargs['familyid']
+        return context
+
 class DietCreateView(LoginRequiredMixin, CreateView):
     model = Diet
     form_class = DietForm
-    success_url = reverse_lazy('diet_index')
 
     def get_success_url(self, **kwargs):
         if  kwargs != None:
@@ -56,10 +67,34 @@ class DietCreateView(LoginRequiredMixin, CreateView):
         kwargs['familyid'] = self.kwargs['familyid']
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['familyid'] = self.kwargs['familyid']
+        return context
+
 class DietUpdateView(LoginRequiredMixin, UpdateView):
     model = Diet
     form_class = DietForm
-    success_url = reverse_lazy('diet_index')
+
+    def get_success_url(self, **kwargs):
+        if  kwargs != None:
+            return reverse_lazy('diet_index', kwargs = {'familyid': self.kwargs['familyid']})
+        else:
+            return reverse_lazy('diet_index', args = (self.object.id,))
+
+    def get_form_kwargs(self):
+        """This method is what injects forms with their keyword
+            arguments."""
+        # grab the current set of form #kwargs
+        kwargs = super(DietUpdateView, self).get_form_kwargs()
+        # Update the kwargs with the user_id
+        kwargs['familyid'] = self.kwargs['familyid']
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['familyid'] = self.kwargs['familyid']
+        return context
 
 class DietDetailView(LoginRequiredMixin, DetailView):
     model = Diet
@@ -128,7 +163,7 @@ class FCT_view_paging(LoginRequiredMixin, ListView):
     template_name = 'app/FCT_Show_paging.html'  # この行でテンプレート指定
     context_object_name = 'foods1'
     model = FCT
-    paginate_by = 15
+    paginate_by = 20
     CHOICE =	{
       0: 'Food_name',
       1: '-Protein',
