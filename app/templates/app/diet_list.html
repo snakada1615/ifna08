@@ -1,29 +1,105 @@
 {% extends 'app/base.html' %}
 
 {% block content %}
-	<h5>diet of family: {{name}}</h5>
-    <table class="table table-bordered table-striped table-sm table-responsive">
-			<thead>
-				<tr class="table-primary">
-					<td>Diet pettern</td>
-					<td>food name</td>
-					<td>food weight</td>
-					<td>update</td>
-					<td>delete</td>
-				</tr>
-			</thead>
-			<tbody>
-        {% for diet in mylist %}
-          <tr>
-						<td>{{ diet.get_diet_type_display }}</td>
-						<td>{{ diet.Food_name }}</td>
-            <td>{{ diet.food_wt }}</td>
-						<td><a class="btn btn-outline-secondary " href="{% url 'diet_update' pk=diet.pk  familyid=diet.familyid %}">edit</a></td>
-						<td><a class="btn btn-outline-secondary " href="{% url 'diet_delete' pk=diet.pk  familyid=diet.familyid %}">del</a></td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+{% load humanize %}
+	<div class="container">
+		<div class="row">
+			<div class="col-4">
+				Family
+			</div>
+			<div class="col-4">
+				{{name}}
+			</div>
+		</div>
+	</div>
+
+	<div class="container text-white">
+		<div class="row bg-primary">
+			<div class="col-4 border">
+				Nutrients
+			</div>
+			<div class="col-4 border">
+				DRI
+			</div>
+			<div class="col-4 border">
+				Current
+			</div>
+		</div>
+		<div class="row">
+				<div class="col-4 border bg-secondary">
+					protein(g/day)
+				</div>
+				<div class="col-4 border bg-secondary">
+					{{dri_p|floatformat:2}}
+				</div>
+				<div class="col-4 border bg-secondary">
+					{{sum_p|floatformat:2}}
+				</div>
+		</div>
+		<div class="row">
+				<div class="col-4 border bg-secondary">
+					vit-A(μg/day)
+				</div>
+				<div class="col-4 border bg-secondary">
+					{{dri_v|intcomma}}
+				</div>
+				<div class="col-4 border bg-secondary">
+					{{sum_v|intcomma}}
+				</div>
+		</div>
+		<div class="row">
+				<div class="col-4 border bg-secondary">
+					Fe(mg/day)
+				</div>
+				<div class="col-4 border bg-secondary">
+					{{dri_f|floatformat:2}}
+				</div>
+				<div class="col-4 border bg-secondary">
+					{{sum_f|floatformat:2}}
+				</div>
+		</div>
+		<div class="row">
+		</div>
+	</div>
+
+			<hr>
+
+	<div class="container text-white">
+		<div class="row bg-primary">
+			<div class="col-6 border">
+				food
+			</div>
+			<div class="col-2 border">
+				weight
+			</div>
+			<div class="col-2 border">
+				edit
+			</div>
+			<div class="col-2 border">
+				del
+			</div>
+		</div>
+		{% for diet in mylist %}
+			{% if diet.diet_type == 1 %}
+			<div class="row bg-success">
+			{% else %}
+			<div class="row bg-danger">
+			{% endif %}
+				<div class="col-6 border">
+					{{ diet.Food_name }}
+				</div>
+				<div class="col-2 border">
+					{{ diet.food_wt }}
+				</div>
+				<div class="col-2 border  align-items-center">
+					<td><a class="btn btn-light btn-sm" href="{% url 'diet_update' pk=diet.pk  familyid=diet.familyid %}">e</a></td>
+				</div>
+				<div class="col-2 border">
+					<td><a class="btn btn-light btn-sm" href="{% url 'diet_delete' pk=diet.pk  familyid=diet.familyid %}">d</a></td>
+				</div>
+			</div>
+		{% endfor %}
+
 		{% if familyid %}
 		<td><a class="btn btn-outline-secondary" href="{% url 'diet_create' familyid=familyid %}">add</a></td>
 		{% endif %}

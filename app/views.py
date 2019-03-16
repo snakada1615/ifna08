@@ -15,7 +15,24 @@ from django_filters.views import FilterView
 
 from .filters import FamilyFilter
 from .models import FCT, Family, DRI, FamilyList, Diet
-from .forms import Order_Key_Form, Families, Family_Create_Form, FamilyForm, FamiliesAddForm, DietForm
+from .forms import Order_Key_Form, Families, Family_Create_Form, FamilyForm, FamiliesAddForm, DietForm, FamilyListForm
+
+class FamilyList_ListView(LoginRequiredMixin, ListView):
+    model = FamilyList
+    context_object_name = "mylist"
+    template_name = 'app/FmilyList_list.html'
+
+class FamilyList_DeleteView(LoginRequiredMixin, DeleteView):
+    model = FamilyList
+    success_url = reverse_lazy('FamilyList_index')
+
+class FamilyList_CreateView(LoginRequiredMixin, CreateView):
+    model = FamilyList
+    form_class = FamilyListForm
+
+class FamilyList_UpdateView(LoginRequiredMixin, UpdateView):
+    model = FamilyList
+    form_class = FamilyListForm
 
 class DietListView(LoginRequiredMixin, ListView):
     model = Diet
@@ -28,8 +45,15 @@ class DietListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['name'] = FamilyList.objects.get(id = self.kwargs['familyid'])
-        context['familyid'] = self.kwargs['familyid']
+        myid = self.kwargs['familyid']
+        context['familyid'] = myid
+        context['name'] = FamilyList.objects.get(id = myid)
+        context['dri_p'] = FamilyList.objects.get(id = myid).protein
+        context['dri_v'] = FamilyList.objects.get(id = myid).vita
+        context['dri_f'] = FamilyList.objects.get(id = myid).fe
+        context['sum_p'] = FamilyList.objects.get(id = myid).protein_s
+        context['sum_v'] = FamilyList.objects.get(id = myid).vita_s
+        context['sum_f'] = FamilyList.objects.get(id = myid).fe_s
         return context
 
 class DietDeleteView(LoginRequiredMixin, DeleteView):
@@ -247,11 +271,11 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
             family=form.save()
             family.save()
 
-            family_p = Family.objects.aggregate(Sum('protein'))
-            family_v = Family.objects.aggregate(Sum('vita'))
-            family_f = Family.objects.aggregate(Sum('fe'))
             mydata = self.request.session.get('myword')
             myid = FamilyList.objects.get(name = mydata).id
+            family_p = Family.objects.filter(familyid = myid).aggregate(Sum('protein'))
+            family_v = Family.objects.filter(familyid = myid).aggregate(Sum('vita'))
+            family_f = Family.objects.filter(familyid = myid).aggregate(Sum('fe'))
             rec = FamilyList.objects.filter(id = myid).first()
             rec.protein = family_p['protein__sum']
             rec.vita = family_v['vita__sum']
@@ -352,11 +376,11 @@ class CreateFamily(LoginRequiredMixin, CreateView):
                 family=form.save()
                 family.save()
 
-                family_p = Family.objects.aggregate(Sum('protein'))
-                family_v = Family.objects.aggregate(Sum('vita'))
-                family_f = Family.objects.aggregate(Sum('fe'))
                 mydata = self.request.session.get('myword')
                 myid = FamilyList.objects.get(name = mydata).id
+                family_p = Family.objects.filter(familyid = myid).aggregate(sum = Sum('protein'))
+                family_v = Family.objects.filter(familyid = myid).aggregate(sum = Sum('vita'))
+                family_f = Family.objects.filter(familyid = myid).aggregate(sum = Sum('fe'))
                 rec = FamilyList.objects.filter(id = myid).first()
                 rec.protein = family_p['protein__sum']
                 rec.vita = family_v['vita__sum']

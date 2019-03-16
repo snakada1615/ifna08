@@ -23,4 +23,8 @@ urlpatterns = [
     path('diet/detail/<int:familyid>/<int:pk>/', DietDetailView.as_view(), name='diet_detail'),
     path('diet/update/<int:familyid>/<int:pk>/', DietUpdateView.as_view(), name='diet_update'),
     path('diet/delete/<int:familyid>/<int:pk>/', DietDeleteView.as_view(), name='diet_delete'),
+    path('FamilyList/list/',  DietListView.as_view(), name='FamilyList_index'),
+    path('FamilyList/create/', DietCreateView.as_view(), name='FamilyList_create'),
+    path('FamilyList/update/<int:familyid>/', DietUpdateView.as_view(), name='FamilyList_update'),
+    path('FamilyList/delete/<int:familyid>/', DietDeleteView.as_view(), name='FamilyList_delete'),
 ]

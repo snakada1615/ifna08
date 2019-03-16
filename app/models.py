@@ -84,6 +84,29 @@ class FamilyList(models.Model):
         verbose_name='iron',
         default=0
     )
+    protein_s = models.FloatField(
+        verbose_name='protein_s',
+        default=0
+    )
+    vita_s = models.FloatField(
+        verbose_name='Vit-A_s',
+        default=0
+    )
+    fe_s = models.FloatField(
+        verbose_name='iron_s',
+        default=0
+    )
+    remark = models.CharField(
+        verbose_name='remark',
+        max_length=600,
+        default=" "
+    )
+    created_at = models.DateTimeField(
+        verbose_name='record_date',
+        auto_now_add=True
+    )
+
+
     def __str__(self):
         return self.name
 
@@ -174,7 +197,7 @@ class Family(models.Model):
     )
 
     created_at = models.DateTimeField(
-        verbose_name='登録日',
+        verbose_name='record_date',
         auto_now_add=True
     )
 
@@ -202,4 +225,18 @@ class Diet(models.Model):
     diet_type = models.IntegerField(
         default=1,
         choices=diet_choices,
+    )
+    protein = models.FloatField(
+        verbose_name='protein',
+        default=0
+    )
+
+    vita = models.FloatField(
+        verbose_name='Vit-A',
+        default=0
+    )
+
+    fe = models.FloatField(
+        verbose_name='iron',
+        default=0
     )

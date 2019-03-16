@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.admin import widgets
+from django.db.models import Q, Sum
 from .models import FamilyList, Family, DRI, DRI_women, Diet, FCT
 
 import os
@@ -43,14 +44,24 @@ class FamiliesAddForm(forms.ModelForm):
         model = FamilyList
         fields = ("name",)
 
+class FamilyListForm(forms.ModelForm):
+
+    class Meta:
+        model = FamilyList
+        fields = ("name", "remark")
+
+
 class DietForm(forms.ModelForm):
 
     class Meta:
         model = Diet
-        fields = ("familyid", "diet_type", "food_item_id", "Food_name", "food_wt")
+        fields = ("familyid", "diet_type", "food_item_id", "Food_name", "food_wt", "protein", "vita", "fe")
         widgets = {
             'familyid': forms.HiddenInput(),
             'food_item_id': forms.HiddenInput(),
+            'protein': forms.HiddenInput(),
+            'vita': forms.HiddenInput(),
+            'fe': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -61,11 +72,25 @@ class DietForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(DietForm, self).clean()
-        self.cleaned_data['food_item_id'] = FCT.objects.get(Food_name = self.cleaned_data['Food_name']).food_item_id
+        myfood = FCT.objects.get(Food_name = self.cleaned_data['Food_name'])
+        self.cleaned_data['food_item_id'] = myfood.food_item_id
+        self.cleaned_data['protein'] = myfood.Protein * self.cleaned_data['food_wt']
+        self.cleaned_data['vita'] = myfood.VITA_RAE * self.cleaned_data['food_wt']
+        self.cleaned_data['fe'] = myfood.FE * self.cleaned_data['food_wt']
         self.cleaned_data['familyid'] = self.myid
+
+        aggregates = Diet.objects.aggregate(
+            protein1 = Sum('protein', filter = Q(familyid = self.myid)),
+            vita1 = Sum('vita', filter = Q(familyid = self.myid)),
+            fe1 = Sum('fe', filter = Q(familyid = self.myid)),
+        )
+    # you need to put if-clause here
+        rec = FamilyList.objects.filter(id = self.myid).first()
+        rec.protein_s = aggregates['protein1']
+        rec.vita_s = aggregates['vita1']
+        rec.fe_s = aggregates['fe1']
+        rec.save()
         return cleaned_data
-
-
 
 class Families(forms.Form):
     myquery = FamilyList.objects.all()
