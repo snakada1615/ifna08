@@ -1,0 +1,31 @@
+{% extends 'app/base.html' %}
+{% block content %}
+{% load humanize %}
+	<div class="container text-white">
+		<div class="row bg-primary">
+			<div class="col-7 border">
+				family name
+			</div>
+			<div class="col-3 border">
+				edit family member
+			</div>
+			<div class="col-2 border">
+				design diet
+			</div>
+		</div>
+		{% for family in mylist %}
+			<div class="row bg-success">
+				<div class="col-7">
+					{{ family.name }}
+				</div>
+				<div class="col-3 border align-items-center bg-white">
+					<span><a class="btn btn-light btn-sm align-middle badge badge-secondary" href="{% url 'family_edit' familyid=family.pk %}">family</a></span>
+				</div>
+				<div class="col-2 border align-items-center bg-white">
+					<span><a class="btn btn-light btn-sm align-middle badge badge-secondary" href="{% url 'diet_index' familyid=family.pk %}">diet</a></span>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+
+{% endblock %}

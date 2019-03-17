@@ -74,9 +74,9 @@ class DietForm(forms.ModelForm):
         cleaned_data = super(DietForm, self).clean()
         myfood = FCT.objects.get(Food_name = self.cleaned_data['Food_name'])
         self.cleaned_data['food_item_id'] = myfood.food_item_id
-        self.cleaned_data['protein'] = myfood.Protein * self.cleaned_data['food_wt']
-        self.cleaned_data['vita'] = myfood.VITA_RAE * self.cleaned_data['food_wt']
-        self.cleaned_data['fe'] = myfood.FE * self.cleaned_data['food_wt']
+        self.cleaned_data['protein'] = myfood.Protein * self.cleaned_data['food_wt'] / 100
+        self.cleaned_data['vita'] = myfood.VITA_RAE * self.cleaned_data['food_wt'] / 100
+        self.cleaned_data['fe'] = myfood.FE * self.cleaned_data['food_wt'] / 100
         self.cleaned_data['familyid'] = self.myid
 
         aggregates = Diet.objects.aggregate(
@@ -84,12 +84,13 @@ class DietForm(forms.ModelForm):
             vita1 = Sum('vita', filter = Q(familyid = self.myid)),
             fe1 = Sum('fe', filter = Q(familyid = self.myid)),
         )
-    # you need to put if-clause here
-        rec = FamilyList.objects.filter(id = self.myid).first()
-        rec.protein_s = aggregates['protein1']
-        rec.vita_s = aggregates['vita1']
-        rec.fe_s = aggregates['fe1']
-        rec.save()
+        if aggregates:
+            rec = FamilyList.objects.filter(id = self.myid).first()
+            rec.protein_s = aggregates['protein1']
+            rec.vita_s = aggregates['vita1']
+            rec.fe_s = aggregates['fe1']
+            rec.save()
+
         return cleaned_data
 
 class Families(forms.Form):

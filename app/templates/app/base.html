@@ -25,7 +25,8 @@
       <span class="navbar-text">SNA tools</span>
       <a class="nav-link navbar-text" href="{% url 'top_menu' %}" >Top</a>
       <a class="nav-link navbar-text" href="{% url 'fct_view_paging' 1 1 %}" >FCT</a>
-      <a class="nav-link navbar-text" href="{% url 'family_select_create' %}" >DRI</a>
+      <a class="nav-link navbar-text" href="{% url 'FamilyList_index' %}" >Regist</a>
+      <a class="nav-link navbar-text" href="{% url 'select_family' %}" >Edit</a>
     </nav>
 
       {% block content %}

@@ -67,10 +67,10 @@
 	<div class="container text-white">
 		<div class="row bg-primary">
 			<div class="col-6 border">
-				food
+				sex
 			</div>
 			<div class="col-2 border">
-				weight
+				age
 			</div>
 			<div class="col-2 border">
 				edit
@@ -79,23 +79,19 @@
 				del
 			</div>
 		</div>
-		{% for diet in mylist %}
-			{% if diet.diet_type == 1 %}
+		{% for family in families %}
 			<div class="row bg-success">
-			{% else %}
-			<div class="row bg-danger">
-			{% endif %}
 				<div class="col-6 border">
-					{{ diet.Food_name }}
+					{{ family.get_sex_display }}
 				</div>
 				<div class="col-2 border">
-					{{ diet.food_wt }}
+					{{ family.age }}
 				</div>
 				<div class="col-2 border align-items-center bg-white">
 					<span><a class="btn btn-light btn-sm align-middle badge badge-secondary" href="{% url 'diet_update' pk=diet.pk  familyid=diet.familyid %}">edit</a></span>
 				</div>
 				<div class="col-2 border align-items-center bg-white">
-					<span><a class="btn btn-light btn-sm align-middle badge badge-secondary" href="{% url 'diet_delete' pk=diet.pk  familyid=diet.familyid %}">del</a></span>
+					<span><a class="btn btn-light btn-sm align-middle badge badge-secondary" href="{% url 'family_delete' pk=family.pk familyid=family.familyid %}">del</a></span>
 				</div>
 			</div>
 		{% endfor %}
@@ -105,3 +101,10 @@
 		{% endif %}
 
 {% endblock %}
+
+{% for family in families %}
+	<tr>
+		<td>{{ family.get_sex_display }}</td>
+		<td>{{ family.get_age_display }}</td>
+		<td>{{ family.get_women_s_display }}</td>
+		<td><a class="btn btn-outline-secondary " href="{% url 'delete' pk=family.pk  familyid=family.familyid %}">del</a></td>

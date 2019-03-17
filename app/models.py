@@ -96,6 +96,9 @@ class FamilyList(models.Model):
         verbose_name='iron_s',
         default=0
     )
+    size = models.IntegerField(
+        default=0,
+    )
     remark = models.CharField(
         verbose_name='remark',
         max_length=600,

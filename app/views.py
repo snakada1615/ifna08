@@ -10,8 +10,9 @@ from django.shortcuts import render_to_response
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib import messages  # メッセージフレームワーク
-from django.db.models import Sum
 from django_filters.views import FilterView
+from django.db.models import Q, Sum
+
 
 from .filters import FamilyFilter
 from .models import FCT, Family, DRI, FamilyList, Diet
@@ -29,10 +30,12 @@ class FamilyList_DeleteView(LoginRequiredMixin, DeleteView):
 class FamilyList_CreateView(LoginRequiredMixin, CreateView):
     model = FamilyList
     form_class = FamilyListForm
+    success_url = reverse_lazy('FamilyList_index')
 
 class FamilyList_UpdateView(LoginRequiredMixin, UpdateView):
     model = FamilyList
     form_class = FamilyListForm
+    success_url = reverse_lazy('FamilyList_index')
 
 class DietListView(LoginRequiredMixin, ListView):
     model = Diet
@@ -71,6 +74,25 @@ class DietDeleteView(LoginRequiredMixin, DeleteView):
         context['name'] = FamilyList.objects.get(id = self.kwargs['familyid'])
         context['familyid'] = self.kwargs['familyid']
         return context
+
+    def delete(self, request, *args, **kwargs):
+        self.get_object().delete()
+        success_url = self.get_success_url()
+
+        myid = self.kwargs['familyid']
+        aggregates = Diet.objects.aggregate(
+            protein1 = Sum('protein', filter = Q(familyid = myid)),
+            vita1 = Sum('vita', filter = Q(familyid = myid)),
+            fe1 = Sum('fe', filter = Q(familyid = myid)),
+        )
+        if aggregates:
+            rec = FamilyList.objects.filter(id = myid).first()
+            rec.protein_s = aggregates['protein1']
+            rec.vita_s = aggregates['vita1']
+            rec.fe_s = aggregates['fe1']
+            rec.save()
+
+        return HttpResponseRedirect(success_url)
 
 class DietCreateView(LoginRequiredMixin, CreateView):
     model = Diet
@@ -393,6 +415,12 @@ class CreateFamily(LoginRequiredMixin, CreateView):
 
         if 'btn3' in request.POST:
             return redirect('top_menu')
+
+class SelectMenu(LoginRequiredMixin, ListView):
+    model = FamilyList
+    context_object_name = 'mylist'
+    template_name = 'app/SelectMenu.html'
+
 
 def family_select_create(request):
     if request.method == "POST":
