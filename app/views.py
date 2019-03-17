@@ -142,69 +142,6 @@ class DietUpdateView(LoginRequiredMixin, UpdateView):
         context['familyid'] = self.kwargs['familyid']
         return context
 
-class DietDetailView(LoginRequiredMixin, DetailView):
-    model = Diet
-
-class FamilyEditView(LoginRequiredMixin, CreateView):
-    template_name = 'app/family_edit.html'
-    form_class = Family_Create_Form
-
-    def get_context_data(self, **kwargs):
-        myid = self.kwargs['familyid']
-        mydata = FamilyList.objects.get(id = myid)
-        context = super().get_context_data(**kwargs)
-        form = Family_Create_Form(initial={'name': mydata, 'familyid' : myid})
-        context['form'] = form
-        context['name'] = mydata
-        context['myid'] = myid
-        context["families"] = Family.objects.filter(familyid = self.kwargs['familyid']).order_by('age')
-        return context
-
-    def get_success_url(self, **kwargs):
-        if  kwargs != None:
-            return reverse_lazy('family_edit', kwargs = {'familyid': self.kwargs['familyid']})
-        else:
-            return reverse_lazy('family_edit', args = (self.object.id,))
-
-    def post(self, request, *args, **kwargs):
-        if 'btn1' in request.POST:
-            form = Family_Create_Form(request.POST)
-            if form.is_valid():
-                family=form.save()
-                family.save()
-
-                myid = self.kwargs['familyid']
-                family_p = Family.objects.filter(familyid = myid).aggregate(Sum('protein'))
-                family_v = Family.objects.filter(familyid = myid).aggregate(Sum('vita'))
-                family_f = Family.objects.filter(familyid = myid).aggregate(Sum('fe'))
-                mydata = FamilyList.objects.get(id = myid).name
-                rec = FamilyList.objects.filter(id = myid).first()
-                rec.protein = family_p['protein__sum']
-                rec.vita = family_v['vita__sum']
-                rec.fe = family_f['fe__sum']
-                rec.save()
-            return redirect('family_edit', familyid = myid)
-#            return redirect('family')
-
-
-class family_viewonly(LoginRequiredMixin, ListView):
-    template_name = 'app/family_viewonly.html'  # この行でテンプレート指定
-    context_object_name = 'families'
-    model = Family
-
-    def get_queryset(self):
-        queryset = super().get_queryset().filter(familyid = self.kwargs['familyid']).order_by('age')
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['name'] = FamilyList.objects.get(id = self.kwargs['familyid'])
-        context['myid'] = FamilyList.objects.get(id = self.kwargs['familyid']).id
-        context['dri_p'] = FamilyList.objects.get(id = self.kwargs['familyid']).protein
-        context['dri_v'] = FamilyList.objects.get(id = self.kwargs['familyid']).vita
-        context['dri_f'] = FamilyList.objects.get(id = self.kwargs['familyid']).fe
-        return context
-
 class FCT_view_paging(LoginRequiredMixin, ListView):
     template_name = 'app/FCT_Show_paging.html'  # この行でテンプレート指定
     context_object_name = 'foods1'
@@ -250,67 +187,62 @@ class FCT_view_paging(LoginRequiredMixin, ListView):
 
 # Create your views here.
 
-# 検索一覧画面
-class FamilyFilterView(LoginRequiredMixin, FilterView):
+class family_list(LoginRequiredMixin, ListView):
+    template_name = 'app/family_list.html'  # この行でテンプレート指定
+    context_object_name = 'families'
     model = Family
 
-    # デフォルトの並び順を新しい順とする
-    queryset = Family.objects.all().order_by('-created_at')
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(familyid = self.kwargs['familyid']).order_by('age')
+        return queryset
 
-    # django-filter用設定
-    filterset_class = FamilyFilter
-    strict = False
-
-    # 1ページあたりの表示件数
-    paginate_by = 10
-
-    # 検索条件をセッションに保存する
-    def get(self, request, **kwargs):
-        if request.GET:
-            request.session['query'] = request.GET
-        else:
-            request.GET = request.GET.copy()
-            if 'query' in request.session.keys():
-                for key in request.session['query'].keys():
-                    request.GET[key] = request.session['query'][key]
-
-        return super().get(request, **kwargs)
-
-# 詳細画面
-class FamilyDetailView(LoginRequiredMixin, DetailView):
-    model = Family
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['name'] = FamilyList.objects.get(id = self.kwargs['familyid'])
+        context['myid'] = FamilyList.objects.get(id = self.kwargs['familyid']).id
+        context['dri_p'] = FamilyList.objects.get(id = self.kwargs['familyid']).protein
+        context['dri_v'] = FamilyList.objects.get(id = self.kwargs['familyid']).vita
+        context['dri_f'] = FamilyList.objects.get(id = self.kwargs['familyid']).fe
+        return context
 
 # 登録画面
 class FamilyCreateView(LoginRequiredMixin, CreateView):
     model = Family
     form_class = Family_Create_Form
-    success_url = reverse_lazy('index')
 
-    def post(self, request, *args, **kwargs):
-        form = Family_Create_Form(request.POST)
-        if form.is_valid():
-            family=form.save()
-            family.save()
+    def get_context_data(self, **kwargs):
+        myid = self.kwargs['familyid']
+        mydata = FamilyList.objects.get(id = myid)
+        context = super().get_context_data(**kwargs)
+        context['myid'] = myid
+        context['name'] = mydata
+        context["families"] = Family.objects.filter(familyid = self.kwargs['familyid']).order_by('age')
+        return context
 
-            mydata = self.request.session.get('myword')
-            myid = FamilyList.objects.get(name = mydata).id
-            family_p = Family.objects.filter(familyid = myid).aggregate(Sum('protein'))
-            family_v = Family.objects.filter(familyid = myid).aggregate(Sum('vita'))
-            family_f = Family.objects.filter(familyid = myid).aggregate(Sum('fe'))
-            rec = FamilyList.objects.filter(id = myid).first()
-            rec.protein = family_p['protein__sum']
-            rec.vita = family_v['vita__sum']
-            rec.fe = family_f['fe__sum']
-            rec.save()
-        return redirect('index')
-
+    def get_success_url(self, **kwargs):
+        if  kwargs != None:
+            return reverse_lazy('family_list', kwargs = {'familyid': self.kwargs['familyid']})
+        else:
+            return reverse_lazy('family_list', args = (self.object.id,))
 
 # 更新画面
 class FamilyUpdateView(LoginRequiredMixin, UpdateView):
     model = Family
-    form_class = FamilyForm
-    success_url = reverse_lazy('index')
+    form_class = Family_Create_Form
+
+    def get_context_data(self, **kwargs):
+        myid = self.kwargs['familyid']
+        mydata = FamilyList.objects.get(id = myid)
+        context = super().get_context_data(**kwargs)
+        form = Family_Create_Form(initial={'name': mydata, 'familyid' : myid})
+        context['form'] = form
+        context['name'] = mydata
+        context['myid'] = myid
+        context["families"] = Family.objects.filter(familyid = self.kwargs['familyid']).order_by('age')
+        return context
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('family_list', kwargs = {'familyid': self.kwargs['familyid'], 'pk': self.object.id})
 
 
 # 削除画面
@@ -324,33 +256,29 @@ class FamilyDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self, **kwargs):
         if  kwargs != None:
-            return reverse_lazy('family_edit', kwargs = {'familyid': self.kwargs['familyid']})
+            return reverse_lazy('family_list', kwargs = {'familyid': self.kwargs['familyid']})
         else:
-            return reverse_lazy('family_edit', args = (self.object.id,))
+            return reverse_lazy('family_list', args = (self.object.id,))
 
-    def post(self, request, *args, **kwargs):
-        if self.request.POST.get("confirm_delete"):
-            # when confirmation page has been displayed and confirm button pressed
-            queryset = super(FamilyDeleteView, self).get_queryset()
-            queryset.filter(pk = self.kwargs['pk']).delete() # deleting on the queryset is more efficient than on the model object
 
-            myid = self.kwargs['familyid']
-            family_p = Family.objects.filter(familyid = myid).aggregate(sum = Sum('protein'))
-            family_v = Family.objects.filter(familyid = myid).aggregate(sum = Sum('vita'))
-            family_f = Family.objects.filter(familyid = myid).aggregate(sum = Sum('fe'))
-            mydata = FamilyList.objects.get(id = myid).name
+    def delete(self, request, *args, **kwargs):
+        self.get_object().delete()
+        success_url = self.get_success_url()
+
+        myid = self.kwargs['familyid']
+        aggregates = Family.objects.aggregate(
+            protein1 = Sum('protein', filter = Q(familyid = myid)),
+            vita1 = Sum('vita', filter = Q(familyid = myid)),
+            fe1 = Sum('fe', filter = Q(familyid = myid)),
+        )
+        if aggregates:
             rec = FamilyList.objects.filter(id = myid).first()
-            rec.protein = family_p['sum']
-            rec.vita = family_v['sum']
-            rec.fe = family_f['sum']
+            rec.protein = aggregates['protein1']
+            rec.vita = aggregates['vita1']
+            rec.fe = aggregates['fe1']
             rec.save()
-            return redirect('family_edit', familyid = myid)
-        elif self.request.POST.get("cancel"):
-            # when confirmation page has been displayed and cancel button pressed
-            return redirect('family_edit', familyid = self.kwargs['familyid'])
-        else:
-            # when data is coming from the form which lists all items
-            return self.get(self, *args, **kwargs)
+
+        return HttpResponseRedirect(success_url)
 
 class top_menu(LoginRequiredMixin, TemplateView):
     template_name = "app/topmenu.html"  # この行でテンプレート指定
@@ -368,53 +296,6 @@ class FamiliesAddView(LoginRequiredMixin, CreateView):
             return redirect('family_edit', myid)
 
         return render(request, 'app/families_add.html', )
-
-
-class CreateFamily(LoginRequiredMixin, CreateView):
-    template_name = 'app/family_create.html'
-    form_class = Family_Create_Form
-    success_url = 'family_create'
-
-    def get_context_data(self, **kwargs):
-        mydata = self.request.session.get('myword')
-        myid = FamilyList.objects.get(name = mydata).id
-        dri_p = FamilyList.objects.get(name = mydata).protein
-        dri_v = FamilyList.objects.get(name = mydata).vita
-        dri_f = FamilyList.objects.get(name = mydata).fe
-        context = super().get_context_data(**kwargs)
-        form = Family_Create_Form(initial={'name': mydata, 'familyid' : myid})
-        context['form'] = form
-        context['name'] = mydata
-        context['dri_p'] = dri_p
-        context['dri_v'] = dri_v
-        context['dri_f'] = dri_f
-        context["families"] = Family.objects.filter(name = mydata)
-        return context
-
-    def post(self, request, *args, **kwargs):
-        if 'btn1' in request.POST:
-            form = Family_Create_Form(request.POST)
-            if form.is_valid():
-                family=form.save()
-                family.save()
-
-                mydata = self.request.session.get('myword')
-                myid = FamilyList.objects.get(name = mydata).id
-                family_p = Family.objects.filter(familyid = myid).aggregate(sum = Sum('protein'))
-                family_v = Family.objects.filter(familyid = myid).aggregate(sum = Sum('vita'))
-                family_f = Family.objects.filter(familyid = myid).aggregate(sum = Sum('fe'))
-                rec = FamilyList.objects.filter(id = myid).first()
-                rec.protein = family_p['protein__sum']
-                rec.vita = family_v['vita__sum']
-                rec.fe = family_f['fe__sum']
-                rec.save()
-            return redirect('family_create')
-
-        if 'btn2' in request.POST:
-            return redirect('family_select_create')
-
-        if 'btn3' in request.POST:
-            return redirect('top_menu')
 
 class SelectMenu(LoginRequiredMixin, ListView):
     model = FamilyList

@@ -13,7 +13,6 @@ CHOICE = {
 }
 
 
-
 class FamilyForm(forms.ModelForm):
 
     class Meta:
