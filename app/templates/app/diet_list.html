@@ -100,8 +100,6 @@
 			</div>
 		{% endfor %}
 
-		{% if familyid %}
-		<td><a class="btn btn-outline-secondary" href="{% url 'diet_create' familyid=familyid %}">add</a></td>
-		{% endif %}
+		<td><a class="btn btn-outline-secondary" href="{% url 'diet_create' familyid=familyid %}">add food</a></td>
 
 {% endblock %}

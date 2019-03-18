@@ -57,6 +57,7 @@ class DietForm(forms.ModelForm):
         fields = ("familyid", "diet_type", "food_item_id", "Food_name", "food_wt", "protein", "vita", "fe")
         widgets = {
             'familyid': forms.HiddenInput(),
+            'diet_type': forms.RadioSelect(),
             'food_item_id': forms.HiddenInput(),
             'protein': forms.HiddenInput(),
             'vita': forms.HiddenInput(),

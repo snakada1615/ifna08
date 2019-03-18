@@ -96,8 +96,6 @@
 			</div>
 		{% endfor %}
 
-		{% if families.0.familyid %}
-		<td><a class="btn btn-outline-secondary" href="{% url 'family_create' familyid=families.0.familyid %}">add family member</a></td>
-		{% endif %}
+		<td><a class="btn btn-outline-secondary" href="{% url 'family_create' familyid=myid %}">add family member</a></td>
 
 {% endblock %}
