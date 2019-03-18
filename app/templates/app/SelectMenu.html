@@ -19,7 +19,7 @@
 					{{ family.name }}
 				</div>
 				<div class="col-3 border align-items-center bg-white">
-					<span><a class="btn btn-light btn-sm align-middle badge badge-secondary" href="{% url 'family_edit' familyid=family.pk %}">family</a></span>
+					<span><a class="btn btn-light btn-sm align-middle badge badge-secondary" href="{% url 'family_list' familyid=family.pk %}">family</a></span>
 				</div>
 				<div class="col-2 border align-items-center bg-white">
 					<span><a class="btn btn-light btn-sm align-middle badge badge-secondary" href="{% url 'diet_index' familyid=family.pk %}">diet</a></span>

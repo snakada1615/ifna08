@@ -1,13 +1,12 @@
 from django.urls import path
 from . import views
 
-from .views import top_menu, FCT_view_paging, FamilyCreateView
+from .views import FCT_view_paging, FamilyCreateView
 from .views import FamilyDeleteView, FamilyCreateView, FamilyUpdateView
 from .views import DietCreateView, DietUpdateView, DietListView, DietDeleteView
 from .views import FamilyList_ListView, FamilyList_CreateView, FamilyList_DeleteView, FamilyList_UpdateView, SelectMenu, family_list
 
 urlpatterns = [
-    path('',  top_menu.as_view(), name='top_menu'),
     path('family/list/<int:familyid>',  family_list.as_view(), name='family_list'),
     path('family/create/<int:familyid>/', FamilyCreateView.as_view(), name='family_create'),
     path('family/update/<int:familyid>/<int:pk>/', FamilyUpdateView.as_view(), name='family_update'),

@@ -77,19 +77,6 @@ class DietForm(forms.ModelForm):
         self.cleaned_data['vita'] = myfood.VITA_RAE * self.cleaned_data['food_wt'] / 100
         self.cleaned_data['fe'] = myfood.FE * self.cleaned_data['food_wt'] / 100
         self.cleaned_data['familyid'] = self.myid
-
-        aggregates = Diet.objects.aggregate(
-            protein1 = Sum('protein', filter = Q(familyid = self.myid)),
-            vita1 = Sum('vita', filter = Q(familyid = self.myid)),
-            fe1 = Sum('fe', filter = Q(familyid = self.myid)),
-        )
-        if aggregates:
-            rec = FamilyList.objects.filter(id = self.myid).first()
-            rec.protein_s = aggregates['protein1']
-            rec.vita_s = aggregates['vita1']
-            rec.fe_s = aggregates['fe1']
-            rec.save()
-
         return cleaned_data
 
 class Families(forms.Form):
@@ -108,18 +95,6 @@ class Family_Create_Form(forms.ModelForm):
         super(Family_Create_Form, self).__init__(*args, **kwargs)
 
     def clean_familyid(self):
-        aggregates = Family.objects.aggregate(
-            protein1 = Sum('protein', filter = Q(familyid = self.myid)),
-            vita1 = Sum('vita', filter = Q(familyid = self.myid)),
-            fe1 = Sum('fe', filter = Q(familyid = self.myid)),
-        )
-        if aggregates:
-            rec = FamilyList.objects.filter(id = self.myid).first()
-            rec.protein = aggregates['protein1']
-            rec.vita = aggregates['vita1']
-            rec.fe = aggregates['fe1']
-            rec.save()
-
         familyid = self.myid
         return familyid
 

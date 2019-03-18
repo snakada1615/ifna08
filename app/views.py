@@ -118,6 +118,24 @@ class DietCreateView(LoginRequiredMixin, CreateView):
         context['familyid'] = self.kwargs['familyid']
         return context
 
+    def form_valid(self, form):
+        self.object = form.save()
+        # do something with self.object
+        # remember the import: from django.http import HttpResponseRedirect
+        myid = self.kwargs['familyid']
+        aggregates = Diet.objects.aggregate(
+            protein1 = Sum('protein', filter = Q(familyid = myid)),
+            vita1 = Sum('vita', filter = Q(familyid = myid)),
+            fe1 = Sum('fe', filter = Q(familyid = myid)),
+        )
+        if aggregates:
+            rec = FamilyList.objects.filter(id = myid).first()
+            rec.protein_s = aggregates['protein1']
+            rec.vita_s = aggregates['vita1']
+            rec.fe_s = aggregates['fe1']
+            rec.save()
+        return HttpResponseRedirect(self.get_success_url())
+
 class DietUpdateView(LoginRequiredMixin, UpdateView):
     model = Diet
     form_class = DietForm
@@ -141,6 +159,24 @@ class DietUpdateView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['familyid'] = self.kwargs['familyid']
         return context
+
+    def form_valid(self, form):
+        self.object = form.save()
+        # do something with self.object
+        # remember the import: from django.http import HttpResponseRedirect
+        myid = self.kwargs['familyid']
+        aggregates = Diet.objects.aggregate(
+            protein1 = Sum('protein', filter = Q(familyid = myid)),
+            vita1 = Sum('vita', filter = Q(familyid = myid)),
+            fe1 = Sum('fe', filter = Q(familyid = myid)),
+        )
+        if aggregates:
+            rec = FamilyList.objects.filter(id = myid).first()
+            rec.protein_s = aggregates['protein1']
+            rec.vita_s = aggregates['vita1']
+            rec.fe_s = aggregates['fe1']
+            rec.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 class FCT_view_paging(LoginRequiredMixin, ListView):
     template_name = 'app/FCT_Show_paging.html'  # この行でテンプレート指定
@@ -179,13 +215,6 @@ class FCT_view_paging(LoginRequiredMixin, ListView):
         context['categ_id'] = self.kwargs['categ']
         context['categ'] = self.CATEG[self.kwargs['categ']]
         return context
-
-    def post(self, request, *args, **kwargs):
-        if 'btn2' in request.POST:
-            return redirect('top_menu')
-
-
-# Create your views here.
 
 class family_list(LoginRequiredMixin, ListView):
     template_name = 'app/family_list.html'  # この行でテンプレート指定
@@ -234,6 +263,31 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('family_list', kwargs = {'familyid': self.kwargs['familyid']})
 
+    def form_valid(self, form):
+        self.object = form.save()
+        # do something with self.object
+        # remember the import: from django.http import HttpResponseRedirect
+        myid = self.kwargs['familyid']
+        aggregates = Family.objects.aggregate(
+            protein1 = Sum('protein', filter = Q(familyid = myid)),
+            vita1 = Sum('vita', filter = Q(familyid = myid)),
+            fe1 = Sum('fe', filter = Q(familyid = myid)),
+        )
+        if aggregates:
+            rec = FamilyList.objects.filter(id = myid).first()
+            rec.protein = aggregates['protein1']
+            rec.vita = aggregates['vita1']
+            rec.fe = aggregates['fe1']
+            rec.save()
+
+        mySize = Family.objects.filter(familyid = myid).count()
+        if mySize > 0:
+            rec = FamilyList.objects.filter(id = myid).first()
+            rec.size = mySize
+            rec.save()
+
+        return HttpResponseRedirect(self.get_success_url())
+
 # 更新画面
 class FamilyUpdateView(LoginRequiredMixin, UpdateView):
     model = Family
@@ -247,6 +301,24 @@ class FamilyUpdateView(LoginRequiredMixin, UpdateView):
         # Update the kwargs with the user_id
         kwargs['myid'] = self.kwargs['familyid']
         return kwargs
+
+    def form_valid(self, form):
+        self.object = form.save()
+        # do something with self.object
+        # remember the import: from django.http import HttpResponseRedirect
+        myid = self.kwargs['familyid']
+        aggregates = Family.objects.aggregate(
+            protein1 = Sum('protein', filter = Q(familyid = myid)),
+            vita1 = Sum('vita', filter = Q(familyid = myid)),
+            fe1 = Sum('fe', filter = Q(familyid = myid)),
+        )
+        if aggregates:
+            rec = FamilyList.objects.filter(id = myid).first()
+            rec.protein = aggregates['protein1']
+            rec.vita = aggregates['vita1']
+            rec.fe = aggregates['fe1']
+            rec.save()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         myid = self.kwargs['familyid']
@@ -276,7 +348,6 @@ class FamilyDeleteView(LoginRequiredMixin, DeleteView):
         else:
             return reverse_lazy('family_list', args = (self.object.id,))
 
-
     def delete(self, request, *args, **kwargs):
         self.get_object().delete()
         success_url = self.get_success_url()
@@ -294,48 +365,15 @@ class FamilyDeleteView(LoginRequiredMixin, DeleteView):
             rec.fe = aggregates['fe1']
             rec.save()
 
+        mySize = Family.objects.filter(familyid = myid).count()
+        if mySize > 0:
+            rec = FamilyList.objects.filter(id = myid).first()
+            rec.size = mySize
+            rec.save()
+
         return HttpResponseRedirect(success_url)
-
-class top_menu(LoginRequiredMixin, TemplateView):
-    template_name = "app/topmenu.html"  # この行でテンプレート指定
-
-class FamiliesAddView(LoginRequiredMixin, CreateView):
-    model = FamilyList
-    template_name = 'app/families_add.html'
-    form_class = FamiliesAddForm()
-
-    def post(self, request, *args, **kwargs):
-        if 'btn1' in request.POST:
-            myname = request.POST.get('newfamily')
-            FamilyList.objects.create(name = myname)
-            myid =  FamilyList.objects.get(name = myname).id
-            return redirect('family_edit', myid)
-
-        return render(request, 'app/families_add.html', )
 
 class SelectMenu(LoginRequiredMixin, ListView):
     model = FamilyList
     context_object_name = 'mylist'
     template_name = 'app/SelectMenu.html'
-
-
-def family_select_create(request):
-    if request.method == "POST":
-        if 'btn1' in request.POST:
-            families = Families(data=request.POST)
-            if families.is_valid():
-                myid = FamilyList.objects.get(name = request.POST.get('familyname')).id
-                return redirect('family_viewonly', familyid = myid)
-
-        if 'btn2' in request.POST:
-            myname = request.POST.get('newfamily')
-            FamilyList.objects.create(name = myname)
-            myid =  FamilyList.objects.get(name = myname).id
-            return redirect('family_edit', myid)
-
-    else:  # ← methodが'POST'ではない = 最初のページ表示時の処理
-        families = Families()
-
-    return render(request, 'app/family_select.html', {
-        'families' : families,
-    })

@@ -158,10 +158,4 @@
 		<a class="btn btn-outline-info" href="{% url 'fct_view_paging' 11 0 %}">Bevarages</a>
 		<a class="btn btn-outline-info" href="{% url 'fct_view_paging' 12 0 %}">Miscellaneous</a>
 
-		<hr>
-
-		<form action="" method="POST">
-			{% csrf_token %}
-		<input class="btn pull-right btn-primary" type="submit" name="btn2" value="Back to main menu"/>
-
 {% endblock %}
