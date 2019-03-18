@@ -103,6 +103,30 @@ class Family_Create_Form(forms.ModelForm):
         fields = ("familyid", "name" ,"age", "sex", "women_s", "protein", "vita", "fe")
         widgets = {'name': forms.HiddenInput(),'familyid': forms.HiddenInput(),'protein': forms.HiddenInput(), 'vita': forms.HiddenInput(), 'fe': forms.HiddenInput()}
 
+    def __init__(self, *args, **kwargs):
+        self.myid = kwargs.pop('myid')
+        super(Family_Create_Form, self).__init__(*args, **kwargs)
+
+    def clean_familyid(self):
+        aggregates = Family.objects.aggregate(
+            protein1 = Sum('protein', filter = Q(familyid = self.myid)),
+            vita1 = Sum('vita', filter = Q(familyid = self.myid)),
+            fe1 = Sum('fe', filter = Q(familyid = self.myid)),
+        )
+        if aggregates:
+            rec = FamilyList.objects.filter(id = self.myid).first()
+            rec.protein = aggregates['protein1']
+            rec.vita = aggregates['vita1']
+            rec.fe = aggregates['fe1']
+            rec.save()
+
+        familyid = self.myid
+        return familyid
+
+    def clean_name(self):
+        name = FamilyList.objects.get(id = self.myid).name
+        return name
+
     def clean_women_s(self):
         a = self.cleaned_data['women_s']
         if self.cleaned_data['sex'] == 1:

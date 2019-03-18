@@ -203,6 +203,9 @@ class family_list(LoginRequiredMixin, ListView):
         context['dri_p'] = FamilyList.objects.get(id = self.kwargs['familyid']).protein
         context['dri_v'] = FamilyList.objects.get(id = self.kwargs['familyid']).vita
         context['dri_f'] = FamilyList.objects.get(id = self.kwargs['familyid']).fe
+        context['sum_p'] = FamilyList.objects.get(id = self.kwargs['familyid']).protein_s
+        context['sum_v'] = FamilyList.objects.get(id = self.kwargs['familyid']).vita_s
+        context['sum_f'] = FamilyList.objects.get(id = self.kwargs['familyid']).fe_s
         return context
 
 # 登録画面
@@ -210,6 +213,15 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
     model = Family
     form_class = Family_Create_Form
 
+    def get_form_kwargs(self):
+        """This method is what injects forms with their keyword
+            arguments."""
+        # grab the current set of form #kwargs
+        kwargs = super(FamilyCreateView, self).get_form_kwargs()
+        # Update the kwargs with the user_id
+        kwargs['myid'] = self.kwargs['familyid']
+        return kwargs
+
     def get_context_data(self, **kwargs):
         myid = self.kwargs['familyid']
         mydata = FamilyList.objects.get(id = myid)
@@ -220,29 +232,33 @@ class FamilyCreateView(LoginRequiredMixin, CreateView):
         return context
 
     def get_success_url(self, **kwargs):
-        if  kwargs != None:
-            return reverse_lazy('family_list', kwargs = {'familyid': self.kwargs['familyid']})
-        else:
-            return reverse_lazy('family_list', args = (self.object.id,))
+        return reverse_lazy('family_list', kwargs = {'familyid': self.kwargs['familyid']})
 
 # 更新画面
 class FamilyUpdateView(LoginRequiredMixin, UpdateView):
     model = Family
     form_class = Family_Create_Form
 
+    def get_form_kwargs(self):
+        """This method is what injects forms with their keyword
+            arguments."""
+        # grab the current set of form #kwargs
+        kwargs = super(FamilyUpdateView, self).get_form_kwargs()
+        # Update the kwargs with the user_id
+        kwargs['myid'] = self.kwargs['familyid']
+        return kwargs
+
     def get_context_data(self, **kwargs):
         myid = self.kwargs['familyid']
         mydata = FamilyList.objects.get(id = myid)
         context = super().get_context_data(**kwargs)
-        form = Family_Create_Form(initial={'name': mydata, 'familyid' : myid})
-        context['form'] = form
         context['name'] = mydata
         context['myid'] = myid
         context["families"] = Family.objects.filter(familyid = self.kwargs['familyid']).order_by('age')
         return context
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('family_list', kwargs = {'familyid': self.kwargs['familyid'], 'pk': self.object.id})
+        return reverse_lazy('family_list', kwargs = {'familyid': self.kwargs['familyid']})
 
 
 # 削除画面
