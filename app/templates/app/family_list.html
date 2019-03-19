@@ -32,7 +32,11 @@
 				<div class="col-4 border bg-secondary">
 					{{dri_p|floatformat:2}}
 				</div>
-				<div class="col-4 border bg-secondary">
+				{% if dri_p > sum_p %}
+					<div class="col-4 border text-warning bg-secondary">
+				{% else %}
+					<div class="col-4 border text-white bg-secondary">
+				{% endif %}
 					{{sum_p|floatformat:2}}
 				</div>
 		</div>
@@ -43,7 +47,11 @@
 				<div class="col-4 border bg-secondary">
 					{{dri_v|intcomma}}
 				</div>
-				<div class="col-4 border bg-secondary">
+				{% if dri_v > sum_v %}
+					<div class="col-4 border text-warning bg-secondary">
+				{% else %}
+					<div class="col-4 border text-white bg-secondary">
+				{% endif %}
 					{{sum_v|intcomma}}
 				</div>
 		</div>
@@ -54,7 +62,11 @@
 				<div class="col-4 border bg-secondary">
 					{{dri_f|floatformat:2}}
 				</div>
-				<div class="col-4 border bg-secondary">
+				{% if dri_f > sum_f %}
+					<div class="col-4 border text-warning bg-secondary">
+				{% else %}
+					<div class="col-4 border text-white bg-secondary">
+				{% endif %}
 					{{sum_f|floatformat:2}}
 				</div>
 		</div>
