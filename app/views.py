@@ -21,7 +21,7 @@ from .forms import Order_Key_Form, Families, Family_Create_Form, FamilyForm, Fam
 class FamilyList_ListView(LoginRequiredMixin, ListView):
     model = FamilyList
     context_object_name = "mylist"
-    template_name = 'app/FmilyList_list.html'
+    template_name = 'app/FamilyList_list.html'
 
 class FamilyList_DeleteView(LoginRequiredMixin, DeleteView):
     model = FamilyList
