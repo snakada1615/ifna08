@@ -102,7 +102,7 @@ class FamilyList(models.Model):
     remark = models.CharField(
         verbose_name='remark',
         max_length=600,
-        default=" "
+        blank = True
     )
     created_at = models.DateTimeField(
         verbose_name='record_date',
