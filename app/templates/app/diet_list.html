@@ -111,7 +111,20 @@
 				</div>
 			</div>
 		{% endfor %}
+		<hr>
 
 		<td><a class="btn btn-outline-secondary" href="{% url 'diet_create' familyid=familyid %}">add food</a></td>
+
+		<hr>
+		<div class="container">
+		 <div class="card bg-secondary text-white">
+		   <div class="card-body">
+		     <div>Diet recommendation:</div>
+				   here you can add, edit or delete diet to optimize nutrient balance.
+					 please click button as you require
+		   </div>
+		 </div>
+		</div>
+
 
 {% endblock %}

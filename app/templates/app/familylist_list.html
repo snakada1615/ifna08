@@ -41,11 +41,27 @@
 				</div>
 			</div>
 		{% endfor %}
+
+		<hr>
 		<div class="row">
 			<div class="col-3">
-				<td><a class="btn btn-outline-secondary" href="{% url 'FamilyList_create' %}">add</a></td>
+				<td><a class="btn btn-outline-secondary" href="{% url 'FamilyList_create' %}">register new family</a></td>
 			</div>
 		</div>
+
+		<br>
+
+		<hr>
+		<div class="container">
+		 <div class="card bg-secondary text-white">
+		   <div class="card-body">
+		     <div>Family registration:</div>
+				   here you can add, edit or delete family (or individual) infromation you work on.
+					 please click button as you require
+		   </div>
+		 </div>
+		</div>
+
 	</div>
 
 {% endblock %}

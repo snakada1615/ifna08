@@ -107,7 +107,20 @@
 				</div>
 			</div>
 		{% endfor %}
+		<hr>
 
 		<td><a class="btn btn-outline-secondary" href="{% url 'family_create' familyid=myid %}">add family member</a></td>
+
+		<hr>
+		<div class="container">
+		 <div class="card bg-secondary text-white">
+		   <div class="card-body">
+		     <div>Family composition:</div>
+				   here you can add, edit or delete family member you work on.
+					 please click button as you require
+		   </div>
+		 </div>
+		</div>
+
 
 {% endblock %}
