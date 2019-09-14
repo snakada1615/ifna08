@@ -8,6 +8,7 @@ from .views import DietCreateView, DietUpdateView, DietListView, DietDeleteView
 from .views import FamilyList_ListView, FamilyList_CreateView, FamilyList_DeleteView, FamilyList_UpdateView, SelectMenu, family_list
 
 urlpatterns = [
+    path('image/', TemplateView.as_view(template_name='app/showpic.html'), name='image'),
     path('top/', TemplateView.as_view(template_name='app/_hello.html'), name='toppage'),
     path('family/list/<int:familyid>',  family_list.as_view(), name='family_list'),
     path('family/create/<int:familyid>/', FamilyCreateView.as_view(), name='family_create'),
